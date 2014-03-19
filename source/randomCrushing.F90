@@ -24,9 +24,9 @@
 !**********************************************************************************************************************************
 
 !  Module to calculate a time series of random loads due to continuous ice crushing
-!  
+!
 !  Based on a spectral method from:
-!  Karna, T, et. al., "A Spectral Model for Forces due to Ice Crushing", 
+!  Karna, T, et. al., "A Spectral Model for Forces due to Ice Crushing",
 !  Journal of Offshore Mechanics and Arctic Engineering, May, 2006
 !
 module randomCrushing
@@ -36,7 +36,7 @@ module randomCrushing
    implicit none
 
    public
-   
+
 contains
 
 !================================================================================
@@ -75,7 +75,7 @@ contains
       maxLoad = globalCrushLoadISO(inParams)
       call logMessage(iceLog, '** Global crushing load is: '//TRIM(Num2LStr(maxLoad))//' Newtons.' )
       call randomCrushLoadTimeSeries(myIceParams, iceLog, maxLoad)
-   
+
    contains
 
 !==================================================================
@@ -99,7 +99,7 @@ contains
       call logMessage(iceLog, '** Mean crushing load is: '//TRIM(Num2LStr(meanLoad))//' Newtons.' )
       stdLoad  = meanLoad*inParams%crushLoadCOV
       call logMessage(iceLog, '** Stdev of crushing load is: '//TRIM(Num2LStr(stdLoad))//' Newtons.' )
-      
+
 !  Number of steps in time series of loads
       nSteps = size(myIceParams%loadSeries,1)
 
@@ -110,14 +110,14 @@ contains
       if (err /= 0) then
          call iceErrorHndlr (iceLog, ErrID_Fatal, 'Error in phase array allocation in RandomCrushLoadTimeSeries', 1)
          return  !  error in array allocation
-      endif   
+      endif
       allocate(frequency(nfSteps), stat=err)
       allocate(amplitude(nfSteps), stat=err)
       if (err /= 0) then
          call iceErrorHndlr (iceLog, ErrID_Fatal, 'Error in frequency or amplitude array allocation in '//  &
                                                   'RandomCrushLoadTimeSeries', 1)
          return  !  error in array allocation
-      endif   
+      endif
 
 !  Initialize the random number generator
       call RLuxGo ( LuxLevel, abs(inParams%randomSeed), 0, 0 )
@@ -131,14 +131,14 @@ contains
    !  calculate the amplitude for each frequency from the PSD
          a = inParams%coeffPSD_b/(inParams%iceVelocity**0.6)
          do nf = 1, nfSteps
-      	   frequency(nf) = float(nf)*inParams%freqStep
+            frequency(nf) = float(nf)*inParams%freqStep
    !  Note PSD is amplitude squared so take square root and mult by freq resolution to get discrete
    !  Also times 2 since we are using a single sided PSD
-      	   amplitude(nf) = sqrt( (2.0*a*(stdLoad**2)*inParams%freqStep)            &
-      	                 / (1.0+inParams%coeffPSD_Ks*(a**1.5)*frequency(nf)**2) )
+            amplitude(nf) = sqrt( (2.0*a*(stdLoad**2)*inParams%freqStep)            &
+                          / (1.0+inParams%coeffPSD_Ks*(a**1.5)*frequency(nf)**2) )
          enddo
 
-   !  calculate time series as a sum of frequencies at each time step 
+   !  calculate time series as a sum of frequencies at each time step
    !  with amplitudes and random phases at each frequency
    !  get the standard deviation for later scaling
          stdSum = 0.0

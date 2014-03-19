@@ -35,7 +35,7 @@ module IceFlexISO
    implicit none
 
    public
-   
+
 contains
 
    subroutine initFlexISO (iceInput, myIceParams, iceLog)
@@ -266,7 +266,7 @@ contains
       real(ReKi)     :: period      ! randomly distributed period for a single cycle
 
       real(ReKi)     :: tau(1)  ! for passing into random number routine
-      
+
 !  Initialize the random number generator
       CALL RLuxGo ( LuxLevel, abs(inParams%randomSeed), 0, 0 )
 
@@ -284,7 +284,7 @@ contains
    !  Number of whole periods required not known (since period lenght is random)
    !  So iterate until we have enough points in the time series
          n = 1
-         seriesLoop: do while (n < nSteps+1)      
+         seriesLoop: do while (n < nSteps+1)
    !  Period is time from no load up to peak, down, then dwell at minimum (normal distribution)
             CALL RndNorm( period, meanPeriod, inParams%periodCOV*meanPeriod )
    !  Period has to be limited to +/- 50% of the mean period
@@ -301,7 +301,7 @@ contains
             peakLoad = min(maxLoad, max(minLoad, peakLoad))
 
    !  begin to increase the load from the minimum to the instantaneous peak
-		      nRiseSteps = nint( inParams%riseTime * tau(1) * period / myIceParams%dt)
+            nRiseSteps = nint( inParams%riseTime * tau(1) * period / myIceParams%dt)
             if (nRiseSteps == 0) then   ! if dt is too large compared to the rise time then get div by zero below
                call iceErrorHndlr (iceLog, ErrID_Fatal, 'Time step too large or period too short in RandomFlexLoadTimeSeries', 1)
                return
@@ -311,9 +311,9 @@ contains
                n = n + 1
                if (n > nSteps) exit seriesLoop
             enddo
-            
+
    !  begin to decrease the load from the peak down to the minimum
-		      nFallSteps = nint( inParams%fallTime * tau(1) * period / myIceParams%dt)
+            nFallSteps = nint( inParams%fallTime * tau(1) * period / myIceParams%dt)
             if (nFallSteps == 0) then   ! if dt is too large compared to the fall time then get div by zero below
                call iceErrorHndlr (iceLog, ErrID_Fatal, 'Time step too large or period too short in RandomFlexLoadTimeSeries', 1)
                return
@@ -325,7 +325,7 @@ contains
             enddo
 
    !  Fill the remaining time steps in the period with the minimum load
-		      minLoadSteps = nint( period / myIceParams%dt) - nRiseSteps - nFallSteps
+            minLoadSteps = nint( period / myIceParams%dt) - nRiseSteps - nFallSteps
             do ns = 1, minLoadSteps
                myIceParams%loadSeries(n,nL) = minLoad
                n = n + 1
@@ -339,7 +339,7 @@ contains
 
       enddo ! leg loop
 
-   end subroutine randomFlexLoadTimeSeries 
+   end subroutine randomFlexLoadTimeSeries
 
    end subroutine initFlexISO  ! containing subroutine
 

@@ -28,7 +28,7 @@
 
 module iceInputParams
 
-   use iso_fortran_env   ! for end of file detection
+   use , INTRINSIC :: iso_fortran_env   ! for end of file detection
    use precision
    use NWTC_IO, only : GetNewUnit, OpenFInpFile
    use iceLog
@@ -341,7 +341,7 @@ contains
       foundParam = .false.
       do n = 1, input%count
          if(index(input%params(n)%name, tmpName) > 0) then
-            outVal = input%params(n)%value
+            outVal = input%params(n)%value ! warning #6192: Fortran 2003 does not allow this data type conversion. <- real to logical
             foundParam = .true.
             exit
          endif

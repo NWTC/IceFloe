@@ -179,8 +179,8 @@ SUBROUTINE IceFloe_Init( InitInp, u, p, x, xd, z, OtherState, y, Interval, InitO
 
    !  Select the smallest time step between calling program suggestion and user input
    !  Then store as a parameter
-      icep%dt = min(icep%dt, interval)
-      interval = icep%dt   ! for return back to the calling program
+      icep%dt = min(icep%dt, REAL(interval,ReKi) )                      ! bjj: if icep%dt == interval, the type casting may be a problem.
+      interval = icep%dt   ! for return back to the calling program     ! bjj: icep%dt is single precision; interval is double; FAST may complain that the icep%dt isn't an integer divisor of interval
 
    ! get the duration of the simulation
    ! this should eventually come from FAST
@@ -303,7 +303,7 @@ SUBROUTINE IceFloe_Init( InitInp, u, p, x, xd, z, OtherState, y, Interval, InitO
       y%iceMesh%Moment         = 0.0
       
    !  Let the user know if there have been warnings
-      if (iceLog.WarnFlag) then
+      if (iceLog%WarnFlag) then
          call addMessage (iceLog, 'Warning message(s) in routine IceFloe_Init, please see the IceFloe log file')
       endif
 
@@ -438,7 +438,7 @@ SUBROUTINE IceFloe_CalcOutput( t, u, p, x, xd, z, OtherState, y, ErrStat, ErrMsg
       endif
 
    !  Let the user know if there have been warnings
-      if (iceLog.WarnFlag) then
+      if (iceLog%WarnFlag) then
          call addMessage (iceLog, 'Warning message(s) in routine IceFloe_Init, please see the IceFloe log file')
       endif
 
@@ -509,7 +509,7 @@ SUBROUTINE IceFloe_End( u, p, x, xd, z, OtherState, y, ErrStat, ErrMsg )
       call logMessage(iceLog, newLine//' IceFloe run complete on: '//curdate()//' at '//curtime())
 
    !  Let the user know if there have been warnings
-      if (iceLog.WarnFlag) then
+      if (iceLog%WarnFlag) then
          call addMessage (iceLog, 'Warning message(s) in routine IceFloe_Init, please see the IceFloe log file')
       endif
 
@@ -562,7 +562,7 @@ SUBROUTINE IceFloe_UpdateStates( t, n, u, utimes, p, x, xd, z, OtherState, ErrSt
 !      xd%DummyContStateVar = 0.0
 
    !  Let the user know if there have been warnings
-      if (iceLog.WarnFlag) then
+      if (iceLog%WarnFlag) then
          call addMessage (iceLog, 'Warning message(s) in routine IceFloe_Init, please see the IceFloe log file')
       endif
 
@@ -603,7 +603,7 @@ SUBROUTINE IceFloe_UpdateDiscState( t, n, u, p, x, xd, z, OtherState, ErrStat, E
       xd%DummyDiscStateVar = 0.0
 
    !  Let the user know if there have been warnings
-      if (iceLog.WarnFlag) then
+      if (iceLog%WarnFlag) then
          call addMessage (iceLog, 'Warning message(s) in routine IceFloe_Init, please see the IceFloe log file')
       endif
 
