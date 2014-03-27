@@ -121,6 +121,7 @@ SUBROUTINE IceFloe_Init( InitInp, u, p, x, xd, z, OtherState, y, Interval, InitO
       INTEGER(IntKi)             :: Err         ! for array allocation error
       INTEGER(IntKi)             :: n
 
+      InitOut%Ver = IceFloe_Ver
       p%initFlag = .false.
 
     ! Define initial system states here:
