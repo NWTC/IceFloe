@@ -341,7 +341,8 @@ contains
       foundParam = .false.
       do n = 1, input%count
          if(index(input%params(n)%name, tmpName) > 0) then
-            outVal = input%params(n)%value ! warning #6192: Fortran 2003 does not allow this data type conversion. <- real to logical
+            !outVal = input%params(n)%value ! warning #6192: Fortran 2003 does not allow this data type conversion. <- real to logical
+            outVal = ( NINT(input%params(n)%value) /= 0 )  !Intel: The numeric value of .TRUE. and .FALSE. can be -1 and 0 or 1 and 0 depending on compiler option fpscomp 
             foundParam = .true.
             exit
          endif
