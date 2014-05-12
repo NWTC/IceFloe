@@ -18,9 +18,9 @@
 !************************************************************************
 
 !**********************************************************************************************************************************
-! File last committed: $Date: 2014-01-31 09:14:18 -0800 (Fri, 31 Jan 2014) $
-! (File) Revision #: $Rev: 130 $
-! URL: $HeadURL: http://sel1004.verit.dnv.com:8080/svn/LoadSimCtl_SurfaceIce/trunk/IceDyn_IntelFortran/IceDyn/source/IceFloe/IceFloe_Test.f90 $
+! File last committed: $Date$
+! (File) Revision #: $Rev$
+! URL: $HeadURL$
 !**********************************************************************************************************************************
 
 !  Test calling program for IceFloe
@@ -63,8 +63,11 @@ program main
    
    write(*,*) ' Initializing IceFloe...'
 
-   Interval = 10.0  ! suggested default time step
+! Initialize the NWTC Subroutine Library
+   CALL NWTC_Init( )
 
+
+   InitInp%rootname = InitInp%InputFile
    call IceFloe_Init( InitInp, u(1), p, x, xd, z, OtherState, y, Interval, InitOut, ErrStat, ErrMsg )
    if (ErrStat >= AbortErrLev) then
       call progAbort( ErrMsg )
@@ -73,28 +76,28 @@ program main
       call progWarn( ErrMsg )
    endif
 
-   call NameOFile ( 1, 'plt', outFile )
+   call GetRoot( InitInp%InputFile, outFile )
+   outFile = trim(outFile)//'.plt'
    call OpenFOutFile ( outUnitNum, outFile )
 
    pos = 0.0
    
    nSteps = size(p%loadSeries,1)
-   if(p%iceType == 5) nSteps = floor(600.0/interval)
+   if(p%iceType == 5) nSteps = floor(600.0/p%dt)
    write(*,*) ' Now time marching'
    
    nL = p%numLegs
    if (p%singleLoad) nL = 1
    do i = 0, nSteps-1
-      call IceFloe_UpdateStates( dble(i)*Interval, i, u, (/dble(i-1), dble(i), dble(i+1)/), p, x, xd, z, OtherState, ErrStat, ErrMsg )
-      call IceFloe_CalcOutput( dble(i)*Interval, u(1), p, x, xd, z, OtherState, y, ErrStat, ErrMsg )
+      call IceFloe_CalcOutput( dble(i)*p%dt, u(1), p, x, xd, z, OtherState, y, ErrStat, ErrMsg )
       if (ErrStat >= AbortErrLev) then
          write(*,*) ErrMsg
          stop
       endif
-      write(outUnitNum,'(1x,10(1pe12.5,A))') sngl(i)*Interval, TAB, pos, TAB, u(1)%iceMesh%TranslationVel(1,1),   &
-                                             TAB, y%iceMesh%Force(1,1), TAB, y%iceMesh%Force(2,1), TAB, y%iceMesh%Moment(3,1)
+      write(outUnitNum,'(1x,10(1pe12.5,A))') sngl(i)*p%dt, TAB, pos, TAB, u(1)%iceMesh%TranslationVel(1,1),   &
+                                             TAB, y%writeoutput(1), TAB, y%writeoutput(2)
 !                                             (TAB, y%iceMesh%Force(1,n), TAB, y%iceMesh%Force(2,n), TAB, y%iceMesh%Moment(3,n), n = 1,nL)
-      if(p%iceType == 5) call sdof(sngl(Interval), y%iceMesh%Force(1,1), pos, u(1)%iceMesh%TranslationVel(1,1))
+      if(p%iceType == 5) call sdof(sngl(p%dt), y%iceMesh%Force(1,1), pos, u(1)%iceMesh%TranslationVel(1,1))
    enddo
 
    write(*,*) ' Wrap up'

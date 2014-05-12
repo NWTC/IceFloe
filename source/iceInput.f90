@@ -18,9 +18,9 @@
 !************************************************************************
 
 !**********************************************************************************************************************************
-! File last committed: $Date: 2014-02-13 12:30:17 -0800 (Thu, 13 Feb 2014) $
-! (File) Revision #: $Rev: 134 $
-! URL: $HeadURL: http://sel1004.verit.dnv.com:8080/svn/LoadSimCtl_SurfaceIce/trunk/IceDyn_IntelFortran/IceDyn/source/IceFloe/iceInput.f90 $
+! File last committed: $Date$
+! (File) Revision #: $Rev$
+! URL: $HeadURL$
 !**********************************************************************************************************************************
 
 !****************************************************************
@@ -28,7 +28,7 @@
 
 module iceInputParams
 
-   use , INTRINSIC :: iso_fortran_env   ! for end of file detection
+   use iso_fortran_env   ! for end of file detection
    use precision
    use NWTC_IO, only : GetNewUnit, OpenFInpFile
    use iceLog
@@ -341,8 +341,7 @@ contains
       foundParam = .false.
       do n = 1, input%count
          if(index(input%params(n)%name, tmpName) > 0) then
-            !outVal = input%params(n)%value ! warning #6192: Fortran 2003 does not allow this data type conversion. <- real to logical
-            outVal = ( NINT(input%params(n)%value) /= 0 )  !Intel: The numeric value of .TRUE. and .FALSE. can be -1 and 0 or 1 and 0 depending on compiler option fpscomp 
+            outVal = input%params(n)%value
             foundParam = .true.
             exit
          endif
