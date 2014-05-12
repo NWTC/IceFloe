@@ -145,7 +145,7 @@ SUBROUTINE IceFloe_Init( InitInp, u, p, x, xd, z, OtherState, y, Interval, InitO
       endif
       p%logUnitNum = iceLog%unitNum  ! save for later use by updata routines
 
-      call logMessage(iceLog, ' Running: '//trim(IceFloe_Ver.Name)//trim(IceFloe_Ver.Ver)//trim(IceFloe_Ver.Date))
+      call logMessage(iceLog, ' Running: '//trim(IceFloe_Ver%Name)//trim(IceFloe_Ver%Ver)//trim(IceFloe_Ver%Date))
       call logMessage(iceLog, ' This run started on: '//curdate()//' at '//curtime()//newLine)
 
    ! go through the inputs: first count them then read them into a structure
@@ -317,7 +317,7 @@ SUBROUTINE IceFloe_Init( InitInp, u, p, x, xd, z, OtherState, y, Interval, InitO
          InitOut%WriteOutputUnt = (/"kN", "kN"/)
       elseif (p%singleLoad) then
          InitOut%WriteOutputHdr = (/"IceLoadFx", "IceLoadFy", "IceLoadMz"/)
-         InitOut%WriteOutputUnt = (/"kN", "kN", "kNm"/)
+         InitOut%WriteOutputUnt = (/"kN ", "kN ", "kNm"/) !bjj: note that each string in the array must have the same number of characters so I added a space on the first two
       else
          do n = 1, p%numLegs
             legNum = TRIM(Num2LStr(n))

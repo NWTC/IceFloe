@@ -8,7 +8,7 @@
 ##################################################################################################################################
 
 # ...... Include files (definitions from NWTC Library) ............................................................................
-include C:\SVN\LoadSimCtl_SurfaceIce\trunk\IceDyn_IntelFortran\IceDyn\source\NWTC_Lib\Registry_NWTC_Library.txt
+include	Registry_NWTC_Library.txt
 
 
 # ..... Initialization data .......................................................................................................

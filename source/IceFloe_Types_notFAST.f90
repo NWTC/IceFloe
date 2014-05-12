@@ -11,7 +11,7 @@ IMPLICIT NONE
     REAL(ReKi)  :: iceDirection      ! ice floe direction [degrees]
     REAL(ReKi)  :: minStrength      ! minimum dynamic ice strength [Pa]
     REAL(ReKi)  :: minStrengthNegVel      ! minimum dynamic ice strength for negative velocity [Pa]
-    REAL(ReKi)  :: minStressRate      ! stress rate at which minimum strength is reached for negative velocity [MPa/sec]
+    REAL(ReKi)  :: defaultArea      ! structure width to use in cpld crushin [m]
     REAL(ReKi)  :: crushArea      ! cross sectional area of ice against tower [m^2]
     REAL(ReKi)  :: coeffStressRate      ! coefficient to calc stress rate from relative vellocity [Pa/m]
     REAL(ReKi)  :: C(4)      ! coefficient of cubic transition curve for negative stress rates [-]

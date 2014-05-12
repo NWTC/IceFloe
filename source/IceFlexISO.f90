@@ -301,7 +301,7 @@ contains
             peakLoad = min(maxLoad, max(minLoad, peakLoad))
 
    !  begin to increase the load from the minimum to the instantaneous peak
-		      nRiseSteps = nint( inParams%riseTime * tau(1) * period / myIceParams%dt)
+            nRiseSteps = nint( inParams%riseTime * tau(1) * period / myIceParams%dt)
             if (nRiseSteps == 0) then   ! if dt is too large compared to the rise time then get div by zero below
                call iceErrorHndlr (iceLog, ErrID_Fatal, 'Time step too large or period too short in RandomFlexLoadTimeSeries', 1)
                return
@@ -313,7 +313,7 @@ contains
             enddo
             
    !  begin to decrease the load from the peak down to the minimum
-		      nFallSteps = nint( inParams%fallTime * tau(1) * period / myIceParams%dt)
+            nFallSteps = nint( inParams%fallTime * tau(1) * period / myIceParams%dt)
             if (nFallSteps == 0) then   ! if dt is too large compared to the fall time then get div by zero below
                call iceErrorHndlr (iceLog, ErrID_Fatal, 'Time step too large or period too short in RandomFlexLoadTimeSeries', 1)
                return
@@ -325,7 +325,7 @@ contains
             enddo
 
    !  Fill the remaining time steps in the period with the minimum load
-		      minLoadSteps = nint( period / myIceParams%dt) - nRiseSteps - nFallSteps
+            minLoadSteps = nint( period / myIceParams%dt) - nRiseSteps - nFallSteps
             do ns = 1, minLoadSteps
                myIceParams%loadSeries(n,nL) = minLoad
                n = n + 1
