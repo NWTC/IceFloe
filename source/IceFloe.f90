@@ -222,12 +222,13 @@ SUBROUTINE IceFloe_Init( InitInp, u, p, x, xd, z, OtherState, y, Interval, InitO
 
    ! allocate storage for the leg positions
       allocate (p%legX(p%numLegs), stat=err)
-      allocate (p%legY(p%numLegs), stat=err)
+      allocate (p%legY(p%numLegs), stat=err)  
       allocate (p%ks(p%numLegs), stat=err)
       if (err /= 0) then
          call iceErrorHndlr (iceLog, ErrID_Fatal, 'Error in allocation of leg data in parameters', 1)
          return  !  error in array allocation
       endif   
+      p%legX = 0; p%legY = 0; !bjj: these weren't being set (a problem with reading the file, but I'll initialize them here for my own debugging)
 
       iceType: select case (p%iceType)
         case (randomCrush)
