@@ -79,6 +79,7 @@ module iceInputParams
       real(ReKi)     :: iceVelocity
       real(ReKi)     :: iceDirection
       real(ReKi)     :: timeStep
+      real(ReKi)     :: rampTime
       integer(IntKi) :: randomSeed
 
       type(towerData):: twr

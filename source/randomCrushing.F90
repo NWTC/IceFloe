@@ -149,11 +149,12 @@ contains
                myIceParams%loadSeries(ns,nL) = myIceParams%loadSeries(ns,nL) +         &
                        amplitude(nf)*cos(2.0*pi*frequency(nf)*timeStep+randPhase(nf))
             enddo
-            stdSum = stdSum + myIceParams%loadSeries(ns,nL)**2
+!            stdSum = stdSum + myIceParams%loadSeries(ns,nL)**2
          enddo
    !  scale the variations to get the desired standard deviation
-         stdSum = sqrt(stdSum/real(nSteps,ReKi))
-         myIceParams%loadSeries(:,nL) = (stdLoad/stdSum)*myIceParams%loadSeries(:,nL)
+   !  Testing suggests that this doesn't give the desired PSD, so remove
+!         stdSum = sqrt(stdSum/real(nSteps,ReKi))
+!         myIceParams%loadSeries(:,nL) = (stdLoad/stdSum)*myIceParams%loadSeries(:,nL)
    !  add in the mean
          myIceParams%loadSeries(:,nL) = myIceParams%ks(nL)*(meanLoad + myIceParams%loadSeries(:,nL))
 
