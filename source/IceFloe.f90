@@ -59,7 +59,7 @@ MODULE IceFloe
 
    PRIVATE
 
-   TYPE(ProgDesc), PARAMETER  :: IceFloe_Ver = ProgDesc( 'IceFloe', 'v1.00.00', 'May-2014' )
+   TYPE(ProgDesc), PARAMETER  :: IceFloe_Ver = ProgDesc( 'IceFloe', 'v1.00.00', '19-Jun-2014' )
 
 ! ..... Public Subroutines ...................................................................................................
 
@@ -437,7 +437,7 @@ SUBROUTINE IceFloe_CalcOutput( t, u, p, x, xd, z, OtherState, y, ErrStat, ErrMsg
       end select iceType
 
    !  Apply a time ramp to the loads
-      loadVect = loadVect*min(1.0, t/p%rampTime)
+      loadVect = loadVect*min(1.0_DbKi, t/p%rampTime)
 
    !  Map the ice load vectors from IceFloe onto the output mesh
       if (p%singleLoad) then
