@@ -60,14 +60,14 @@ contains
 
       call logMessage(iceLog, newLine//' Setting coupled ice crushing input parameters ')
 
-      call getIceInput(iceInput, 'refIceStrength', inParams%refIceStrength, iceLog, 0.5E6, 5.0E6)
+      call getIceInput(iceInput, 'refIceStrength', inParams%refIceStrength, iceLog, 0.5E6_ReKi, 5.0E6_ReKi)
       call logMessage(iceLog, ' Reference ice strength = '//TRIM(Num2LStr(inParams%refIceStrength))//' Pascals')
 
-      call getIceInput(iceInput, 'minStrength', inParams%minStrength, iceLog, 0.0, 1.0E9)
+      call getIceInput(iceInput, 'minStrength', inParams%minStrength, iceLog, 0.0_ReKi, 1.0E9_ReKi)
       call logMessage(iceLog, ' Minimum ice strength from stress rate polynomial = '//        &
                               TRIM(Num2LStr(inParams%minStrength))//' Pascals')
 
-      call getIceInput(iceInput, 'minStrengthNegVel', inParams%minStrengthNegVel, iceLog, 0.0, 1.0E9)
+      call getIceInput(iceInput, 'minStrengthNegVel', inParams%minStrengthNegVel, iceLog, 0.0_ReKi, 1.0E9_ReKi)
       call logMessage(iceLog, ' Minimum negative velocity ice strength = '//        &
                               TRIM(Num2LStr(inParams%minStrengthNegVel))//' Pascals')
 

@@ -54,10 +54,10 @@ contains
 
       call logMessage(iceLog, newLine//' Setting common flexural failure input parameters ')
 
-      call getIceInput(iceInput, 'flexStrength', inParams%flexStrength, iceLog, 0.0, 1.0E9)
+      call getIceInput(iceInput, 'flexStrength', inParams%flexStrength, iceLog, 0.0_ReKi, 1.0E9_ReKi)
       call logMessage(iceLog, ' flexStrength = '//TRIM(Num2LStr(inParams%flexStrength))//' Pascals')
 
-      call getIceInput(iceInput, 'towerConeAngle', inParams%twr%coneAngle, iceLog, 20.0, 70.0)
+      call getIceInput(iceInput, 'towerConeAngle', inParams%twr%coneAngle, iceLog, 20.0_ReKi, 70.0_ReKi)
       call logMessage(iceLog, ' towerConeAngle = '//TRIM(Num2LStr(inParams%twr%coneAngle))//' degrees')
       inParams%twr%coneAngle = D2R*inParams%twr%coneAngle   ! convert to radians
 
@@ -67,10 +67,10 @@ contains
       else
          frictionLimit = sin(inParams%twr%coneAngle)/cos(inParams%twr%coneAngle) - 0.01
       endif
-      call getIceInput(iceInput, 'ice2twrFriction', inParams%ice2twrFriction, iceLog, 0.0, frictionLimit)
+      call getIceInput(iceInput, 'ice2twrFriction', inParams%ice2twrFriction, iceLog, 0.0_ReKi, frictionLimit)
       call logMessage(iceLog, ' ice2twrFriction = '//TRIM(Num2LStr(inParams%ice2twrFriction)))
 
-      call getIceInput(iceInput, 'iceDensity', inParams%iceDensity, iceLog, 0.0)
+      call getIceInput(iceInput, 'iceDensity', inParams%iceDensity, iceLog, 0.0_ReKi)
       call logMessage(iceLog, ' iceDensity = '//TRIM(Num2LStr(inParams%iceDensity))//' kg/m^3')
 
       call getIceInput(iceInput, 'includeHb', inParams%includeHb, iceLog)

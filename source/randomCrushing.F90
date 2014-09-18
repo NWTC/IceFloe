@@ -56,19 +56,19 @@ contains
 
       call logMessage(iceLog, newLine//' Setting parameters for random crushing loads time series')
 
-      call getIceInput(iceInput, 'coeffPSD_b', inParams%coeffPSD_b, iceLog, 0.1, 3.0)
+      call getIceInput(iceInput, 'coeffPSD_b', inParams%coeffPSD_b, iceLog, 0.1_ReKi, 3.0_ReKi)
       call logMessage(iceLog, ' coeffPSD_b = '//TRIM(Num2LStr(inParams%coeffPSD_b)))
 
-      call getIceInput(iceInput, 'coeffPSD_Ks', inParams%coeffPSD_Ks, iceLog, 1.0, 5.0)
+      call getIceInput(iceInput, 'coeffPSD_Ks', inParams%coeffPSD_Ks, iceLog, 1.0_ReKi, 5.0_ReKi)
       call logMessage(iceLog, ' coeffPSD_Ks = '//TRIM(Num2LStr(inParams%coeffPSD_Ks)))
 
-      call getIceInput(iceInput, 'crushLoadCOV', inParams%crushLoadCOV, iceLog, 0.1, 1.0)
+      call getIceInput(iceInput, 'crushLoadCOV', inParams%crushLoadCOV, iceLog, 0.1_ReKi, 1.0_ReKi)
       call logMessage(iceLog, ' crushLoadCOV = '//TRIM(Num2LStr(inParams%crushLoadCOV)))
 
-      call getIceInput(iceInput, 'stdLoadMult', inParams%stdLoadMult, iceLog, 1.0, 6.0)
+      call getIceInput(iceInput, 'stdLoadMult', inParams%stdLoadMult, iceLog, 1.0_ReKi, 6.0_ReKi)
       call logMessage(iceLog, ' stdLoadMult (number of std devs) = '//TRIM(Num2LStr(inParams%stdLoadMult)))
 
-      call getIceInput(iceInput, 'freqStep', inParams%freqStep, iceLog, .001, 0.1)
+      call getIceInput(iceInput, 'freqStep', inParams%freqStep, iceLog, .001_ReKi, 0.1_ReKi)
       call logMessage(iceLog, ' Frequency step = '//TRIM(Num2LStr(inParams%freqStep))//' Hz')
 
 !  Precalculates a time series of loads

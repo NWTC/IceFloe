@@ -50,13 +50,13 @@ contains
 
       call logMessage(iceLog, newLine//' Setting common ice crushing input parameters ')
 
-      call getIceInput(iceInput, 'refIceStrength', inParams%refIceStrength, iceLog, 0.1E6, 50.0E6)
+      call getIceInput(iceInput, 'refIceStrength', inParams%refIceStrength, iceLog, 0.1E6_ReKi, 50.0E6_ReKi)
       call logMessage(iceLog, ' Reference ice strength = '//TRIM(Num2LStr(inParams%refIceStrength))//' Pascals')
 
-      call getIceInput(iceInput, 'refIceThick', inParams%refIceThick, iceLog, 1.0, 1.0)
+      call getIceInput(iceInput, 'refIceThick', inParams%refIceThick, iceLog, 1.0_ReKi, 1.0_ReKi)
       call logMessage(iceLog, ' Reference ice thickness = '//TRIM(Num2LStr(inParams%refIceThick))//' meters ')
 
-      call getIceInput(iceInput, 'staticExponent', inParams%staticExponent, iceLog, -0.16, -0.16)
+      call getIceInput(iceInput, 'staticExponent', inParams%staticExponent, iceLog, -0.16_ReKi, -0.16_ReKi)
       call logMessage(iceLog, ' Exponent for static load = '//TRIM(Num2LStr(inParams%staticExponent)))
 
    end subroutine initIceCrushISO
