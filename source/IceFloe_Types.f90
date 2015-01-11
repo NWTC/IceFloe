@@ -3,7 +3,7 @@
 ! WARNING This file is generated automatically by the FAST registry
 ! Do not edit.  Your changes to this file will be lost.
 !
-! FAST Registry (v2.03.02, 17-Sep-2014)
+! FAST Registry (v2.05.00, 10-Jan-2015)
 !*********************************************************************************************************************************
 ! IceFloe_Types
 !.................................................................................................................................
@@ -105,15 +105,17 @@ IMPLICIT NONE
 ! =======================
 CONTAINS
  SUBROUTINE IceFloe_CopyInitInput( SrcInitInputData, DstInitInputData, CtrlCode, ErrStat, ErrMsg )
-   TYPE(IceFloe_initinputtype), INTENT(INOUT) :: SrcInitInputData
-   TYPE(IceFloe_initinputtype), INTENT(INOUT) :: DstInitInputData
+   TYPE(IceFloe_InitInputType), INTENT(IN) :: SrcInitInputData
+   TYPE(IceFloe_InitInputType), INTENT(INOUT) :: DstInitInputData
    INTEGER(IntKi),  INTENT(IN   ) :: CtrlCode
    INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
    CHARACTER(*),    INTENT(  OUT) :: ErrMsg
 ! Local 
-   INTEGER(IntKi)                 :: i,i1,i2,i3,i4,i5,j,k
-   INTEGER(IntKi)                 :: i1_l,i2_l,i3_l,i4_l,i5_l  ! lower bounds for an array dimension
-   INTEGER(IntKi)                 :: i1_u,i2_u,i3_u,i4_u,i5_u  ! upper bounds for an array dimension
+   INTEGER(IntKi)                 :: i,j,k
+   INTEGER(IntKi)                 :: i1, i1_l, i1_u  !  bounds (upper/lower) for an array dimension 1
+   INTEGER(IntKi)                 :: i2, i2_l, i2_u  !  bounds (upper/lower) for an array dimension 2
+   INTEGER(IntKi)                 :: ErrStat2
+   CHARACTER(1024)                :: ErrMsg2
 ! 
    ErrStat = ErrID_None
    ErrMsg  = ""
@@ -125,7 +127,7 @@ CONTAINS
  END SUBROUTINE IceFloe_CopyInitInput
 
  SUBROUTINE IceFloe_DestroyInitInput( InitInputData, ErrStat, ErrMsg )
-  TYPE(IceFloe_initinputtype), INTENT(INOUT) :: InitInputData
+  TYPE(IceFloe_InitInputType), INTENT(INOUT) :: InitInputData
   INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
   CHARACTER(*),    INTENT(  OUT) :: ErrMsg
   INTEGER(IntKi)                 :: i, i1, i2, i3, i4, i5 
@@ -138,7 +140,7 @@ CONTAINS
   REAL(ReKi),       ALLOCATABLE, INTENT(  OUT) :: ReKiBuf(:)
   REAL(DbKi),       ALLOCATABLE, INTENT(  OUT) :: DbKiBuf(:)
   INTEGER(IntKi),   ALLOCATABLE, INTENT(  OUT) :: IntKiBuf(:)
-  TYPE(IceFloe_initinputtype),  INTENT(INOUT) :: InData
+  TYPE(IceFloe_InitInputType),  INTENT(INOUT) :: InData
   INTEGER(IntKi),   INTENT(  OUT) :: ErrStat
   CHARACTER(*),     INTENT(  OUT) :: ErrMsg
   LOGICAL,OPTIONAL, INTENT(IN   ) :: SizeOnly
@@ -168,9 +170,11 @@ CONTAINS
   Re_BufSz  = 0
   Db_BufSz  = 0
   Int_BufSz  = 0
+!  missing buffer for InputFile
   Re_BufSz   = Re_BufSz   + 1  ! simLength
   Re_BufSz   = Re_BufSz   + 1  ! MSL2SWL
   Re_BufSz   = Re_BufSz   + 1  ! gravity
+!  missing buffer for RootName
   IF ( Re_BufSz  .GT. 0 ) ALLOCATE( ReKiBuf(  Re_BufSz  ) )
   IF ( Db_BufSz  .GT. 0 ) ALLOCATE( DbKiBuf(  Db_BufSz  ) )
   IF ( Int_BufSz .GT. 0 ) ALLOCATE( IntKiBuf( Int_BufSz ) )
@@ -186,7 +190,7 @@ CONTAINS
   REAL(ReKi),      ALLOCATABLE, INTENT(IN   ) :: ReKiBuf(:)
   REAL(DbKi),      ALLOCATABLE, INTENT(IN   ) :: DbKiBuf(:)
   INTEGER(IntKi),  ALLOCATABLE, INTENT(IN   ) :: IntKiBuf(:)
-  TYPE(IceFloe_initinputtype), INTENT(INOUT) :: OutData
+  TYPE(IceFloe_InitInputType), INTENT(INOUT) :: OutData
   INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
   CHARACTER(*),    INTENT(  OUT) :: ErrMsg
     ! Local variables
@@ -227,15 +231,17 @@ CONTAINS
  END SUBROUTINE IceFloe_UnPackInitInput
 
  SUBROUTINE IceFloe_CopyInitOutput( SrcInitOutputData, DstInitOutputData, CtrlCode, ErrStat, ErrMsg )
-   TYPE(IceFloe_initoutputtype), INTENT(INOUT) :: SrcInitOutputData
-   TYPE(IceFloe_initoutputtype), INTENT(INOUT) :: DstInitOutputData
+   TYPE(IceFloe_InitOutputType), INTENT(IN) :: SrcInitOutputData
+   TYPE(IceFloe_InitOutputType), INTENT(INOUT) :: DstInitOutputData
    INTEGER(IntKi),  INTENT(IN   ) :: CtrlCode
    INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
    CHARACTER(*),    INTENT(  OUT) :: ErrMsg
 ! Local 
-   INTEGER(IntKi)                 :: i,i1,i2,i3,i4,i5,j,k
-   INTEGER(IntKi)                 :: i1_l,i2_l,i3_l,i4_l,i5_l  ! lower bounds for an array dimension
-   INTEGER(IntKi)                 :: i1_u,i2_u,i3_u,i4_u,i5_u  ! upper bounds for an array dimension
+   INTEGER(IntKi)                 :: i,j,k
+   INTEGER(IntKi)                 :: i1, i1_l, i1_u  !  bounds (upper/lower) for an array dimension 1
+   INTEGER(IntKi)                 :: i2, i2_l, i2_u  !  bounds (upper/lower) for an array dimension 2
+   INTEGER(IntKi)                 :: ErrStat2
+   CHARACTER(1024)                :: ErrMsg2
 ! 
    ErrStat = ErrID_None
    ErrMsg  = ""
@@ -243,10 +249,9 @@ IF (ALLOCATED(SrcInitOutputData%WriteOutputHdr)) THEN
    i1_l = LBOUND(SrcInitOutputData%WriteOutputHdr,1)
    i1_u = UBOUND(SrcInitOutputData%WriteOutputHdr,1)
    IF (.NOT. ALLOCATED(DstInitOutputData%WriteOutputHdr)) THEN 
-      ALLOCATE(DstInitOutputData%WriteOutputHdr(i1_l:i1_u),STAT=ErrStat)
-      IF (ErrStat /= 0) THEN 
-         ErrStat = ErrID_Fatal 
-         ErrMsg = 'IceFloe_CopyInitOutput: Error allocating DstInitOutputData%WriteOutputHdr.'
+      ALLOCATE(DstInitOutputData%WriteOutputHdr(i1_l:i1_u),STAT=ErrStat2)
+      IF (ErrStat2 /= 0) THEN 
+         CALL SetErrStat(ErrID_Fatal, 'Error allocating DstInitOutputData%WriteOutputHdr.', ErrStat, ErrMsg,'IceFloe_CopyInitOutput')
          RETURN
       END IF
    END IF
@@ -256,20 +261,21 @@ IF (ALLOCATED(SrcInitOutputData%WriteOutputUnt)) THEN
    i1_l = LBOUND(SrcInitOutputData%WriteOutputUnt,1)
    i1_u = UBOUND(SrcInitOutputData%WriteOutputUnt,1)
    IF (.NOT. ALLOCATED(DstInitOutputData%WriteOutputUnt)) THEN 
-      ALLOCATE(DstInitOutputData%WriteOutputUnt(i1_l:i1_u),STAT=ErrStat)
-      IF (ErrStat /= 0) THEN 
-         ErrStat = ErrID_Fatal 
-         ErrMsg = 'IceFloe_CopyInitOutput: Error allocating DstInitOutputData%WriteOutputUnt.'
+      ALLOCATE(DstInitOutputData%WriteOutputUnt(i1_l:i1_u),STAT=ErrStat2)
+      IF (ErrStat2 /= 0) THEN 
+         CALL SetErrStat(ErrID_Fatal, 'Error allocating DstInitOutputData%WriteOutputUnt.', ErrStat, ErrMsg,'IceFloe_CopyInitOutput')
          RETURN
       END IF
    END IF
    DstInitOutputData%WriteOutputUnt = SrcInitOutputData%WriteOutputUnt
 ENDIF
-      CALL NWTC_Library_Copyprogdesc( SrcInitOutputData%Ver, DstInitOutputData%Ver, CtrlCode, ErrStat, ErrMsg )
+      CALL NWTC_Library_Copyprogdesc( SrcInitOutputData%Ver, DstInitOutputData%Ver, CtrlCode, ErrStat2, ErrMsg2 )
+         CALL SetErrStat(ErrStat2, ErrMsg2, ErrStat, ErrMsg,'IceFloe_CopyInitOutput:Ver')
+         IF (ErrStat>=AbortErrLev) RETURN
  END SUBROUTINE IceFloe_CopyInitOutput
 
  SUBROUTINE IceFloe_DestroyInitOutput( InitOutputData, ErrStat, ErrMsg )
-  TYPE(IceFloe_initoutputtype), INTENT(INOUT) :: InitOutputData
+  TYPE(IceFloe_InitOutputType), INTENT(INOUT) :: InitOutputData
   INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
   CHARACTER(*),    INTENT(  OUT) :: ErrMsg
   INTEGER(IntKi)                 :: i, i1, i2, i3, i4, i5 
@@ -289,7 +295,7 @@ ENDIF
   REAL(ReKi),       ALLOCATABLE, INTENT(  OUT) :: ReKiBuf(:)
   REAL(DbKi),       ALLOCATABLE, INTENT(  OUT) :: DbKiBuf(:)
   INTEGER(IntKi),   ALLOCATABLE, INTENT(  OUT) :: IntKiBuf(:)
-  TYPE(IceFloe_initoutputtype),  INTENT(INOUT) :: InData
+  TYPE(IceFloe_InitOutputType),  INTENT(INOUT) :: InData
   INTEGER(IntKi),   INTENT(  OUT) :: ErrStat
   CHARACTER(*),     INTENT(  OUT) :: ErrMsg
   LOGICAL,OPTIONAL, INTENT(IN   ) :: SizeOnly
@@ -322,6 +328,8 @@ ENDIF
   Re_BufSz  = 0
   Db_BufSz  = 0
   Int_BufSz  = 0
+!  missing buffer for WriteOutputHdr
+!  missing buffer for WriteOutputUnt
   CALL NWTC_Library_Packprogdesc( Re_Ver_Buf, Db_Ver_Buf, Int_Ver_Buf, InData%Ver, ErrStat, ErrMsg, .TRUE. ) ! Ver 
   IF(ALLOCATED(Re_Ver_Buf)) Re_BufSz  = Re_BufSz  + SIZE( Re_Ver_Buf  ) ! Ver
   IF(ALLOCATED(Db_Ver_Buf)) Db_BufSz  = Db_BufSz  + SIZE( Db_Ver_Buf  ) ! Ver
@@ -354,7 +362,7 @@ ENDIF
   REAL(ReKi),      ALLOCATABLE, INTENT(IN   ) :: ReKiBuf(:)
   REAL(DbKi),      ALLOCATABLE, INTENT(IN   ) :: DbKiBuf(:)
   INTEGER(IntKi),  ALLOCATABLE, INTENT(IN   ) :: IntKiBuf(:)
-  TYPE(IceFloe_initoutputtype), INTENT(INOUT) :: OutData
+  TYPE(IceFloe_InitOutputType), INTENT(INOUT) :: OutData
   INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
   CHARACTER(*),    INTENT(  OUT) :: ErrMsg
     ! Local variables
@@ -407,15 +415,17 @@ ENDIF
  END SUBROUTINE IceFloe_UnPackInitOutput
 
  SUBROUTINE IceFloe_CopyContState( SrcContStateData, DstContStateData, CtrlCode, ErrStat, ErrMsg )
-   TYPE(IceFloe_continuousstatetype), INTENT(INOUT) :: SrcContStateData
-   TYPE(IceFloe_continuousstatetype), INTENT(INOUT) :: DstContStateData
+   TYPE(IceFloe_ContinuousStateType), INTENT(IN) :: SrcContStateData
+   TYPE(IceFloe_ContinuousStateType), INTENT(INOUT) :: DstContStateData
    INTEGER(IntKi),  INTENT(IN   ) :: CtrlCode
    INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
    CHARACTER(*),    INTENT(  OUT) :: ErrMsg
 ! Local 
-   INTEGER(IntKi)                 :: i,i1,i2,i3,i4,i5,j,k
-   INTEGER(IntKi)                 :: i1_l,i2_l,i3_l,i4_l,i5_l  ! lower bounds for an array dimension
-   INTEGER(IntKi)                 :: i1_u,i2_u,i3_u,i4_u,i5_u  ! upper bounds for an array dimension
+   INTEGER(IntKi)                 :: i,j,k
+   INTEGER(IntKi)                 :: i1, i1_l, i1_u  !  bounds (upper/lower) for an array dimension 1
+   INTEGER(IntKi)                 :: i2, i2_l, i2_u  !  bounds (upper/lower) for an array dimension 2
+   INTEGER(IntKi)                 :: ErrStat2
+   CHARACTER(1024)                :: ErrMsg2
 ! 
    ErrStat = ErrID_None
    ErrMsg  = ""
@@ -423,7 +433,7 @@ ENDIF
  END SUBROUTINE IceFloe_CopyContState
 
  SUBROUTINE IceFloe_DestroyContState( ContStateData, ErrStat, ErrMsg )
-  TYPE(IceFloe_continuousstatetype), INTENT(INOUT) :: ContStateData
+  TYPE(IceFloe_ContinuousStateType), INTENT(INOUT) :: ContStateData
   INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
   CHARACTER(*),    INTENT(  OUT) :: ErrMsg
   INTEGER(IntKi)                 :: i, i1, i2, i3, i4, i5 
@@ -436,7 +446,7 @@ ENDIF
   REAL(ReKi),       ALLOCATABLE, INTENT(  OUT) :: ReKiBuf(:)
   REAL(DbKi),       ALLOCATABLE, INTENT(  OUT) :: DbKiBuf(:)
   INTEGER(IntKi),   ALLOCATABLE, INTENT(  OUT) :: IntKiBuf(:)
-  TYPE(IceFloe_continuousstatetype),  INTENT(INOUT) :: InData
+  TYPE(IceFloe_ContinuousStateType),  INTENT(INOUT) :: InData
   INTEGER(IntKi),   INTENT(  OUT) :: ErrStat
   CHARACTER(*),     INTENT(  OUT) :: ErrMsg
   LOGICAL,OPTIONAL, INTENT(IN   ) :: SizeOnly
@@ -478,7 +488,7 @@ ENDIF
   REAL(ReKi),      ALLOCATABLE, INTENT(IN   ) :: ReKiBuf(:)
   REAL(DbKi),      ALLOCATABLE, INTENT(IN   ) :: DbKiBuf(:)
   INTEGER(IntKi),  ALLOCATABLE, INTENT(IN   ) :: IntKiBuf(:)
-  TYPE(IceFloe_continuousstatetype), INTENT(INOUT) :: OutData
+  TYPE(IceFloe_ContinuousStateType), INTENT(INOUT) :: OutData
   INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
   CHARACTER(*),    INTENT(  OUT) :: ErrMsg
     ! Local variables
@@ -515,15 +525,17 @@ ENDIF
  END SUBROUTINE IceFloe_UnPackContState
 
  SUBROUTINE IceFloe_CopyDiscState( SrcDiscStateData, DstDiscStateData, CtrlCode, ErrStat, ErrMsg )
-   TYPE(IceFloe_discretestatetype), INTENT(INOUT) :: SrcDiscStateData
-   TYPE(IceFloe_discretestatetype), INTENT(INOUT) :: DstDiscStateData
+   TYPE(IceFloe_DiscreteStateType), INTENT(IN) :: SrcDiscStateData
+   TYPE(IceFloe_DiscreteStateType), INTENT(INOUT) :: DstDiscStateData
    INTEGER(IntKi),  INTENT(IN   ) :: CtrlCode
    INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
    CHARACTER(*),    INTENT(  OUT) :: ErrMsg
 ! Local 
-   INTEGER(IntKi)                 :: i,i1,i2,i3,i4,i5,j,k
-   INTEGER(IntKi)                 :: i1_l,i2_l,i3_l,i4_l,i5_l  ! lower bounds for an array dimension
-   INTEGER(IntKi)                 :: i1_u,i2_u,i3_u,i4_u,i5_u  ! upper bounds for an array dimension
+   INTEGER(IntKi)                 :: i,j,k
+   INTEGER(IntKi)                 :: i1, i1_l, i1_u  !  bounds (upper/lower) for an array dimension 1
+   INTEGER(IntKi)                 :: i2, i2_l, i2_u  !  bounds (upper/lower) for an array dimension 2
+   INTEGER(IntKi)                 :: ErrStat2
+   CHARACTER(1024)                :: ErrMsg2
 ! 
    ErrStat = ErrID_None
    ErrMsg  = ""
@@ -531,7 +543,7 @@ ENDIF
  END SUBROUTINE IceFloe_CopyDiscState
 
  SUBROUTINE IceFloe_DestroyDiscState( DiscStateData, ErrStat, ErrMsg )
-  TYPE(IceFloe_discretestatetype), INTENT(INOUT) :: DiscStateData
+  TYPE(IceFloe_DiscreteStateType), INTENT(INOUT) :: DiscStateData
   INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
   CHARACTER(*),    INTENT(  OUT) :: ErrMsg
   INTEGER(IntKi)                 :: i, i1, i2, i3, i4, i5 
@@ -544,7 +556,7 @@ ENDIF
   REAL(ReKi),       ALLOCATABLE, INTENT(  OUT) :: ReKiBuf(:)
   REAL(DbKi),       ALLOCATABLE, INTENT(  OUT) :: DbKiBuf(:)
   INTEGER(IntKi),   ALLOCATABLE, INTENT(  OUT) :: IntKiBuf(:)
-  TYPE(IceFloe_discretestatetype),  INTENT(INOUT) :: InData
+  TYPE(IceFloe_DiscreteStateType),  INTENT(INOUT) :: InData
   INTEGER(IntKi),   INTENT(  OUT) :: ErrStat
   CHARACTER(*),     INTENT(  OUT) :: ErrMsg
   LOGICAL,OPTIONAL, INTENT(IN   ) :: SizeOnly
@@ -586,7 +598,7 @@ ENDIF
   REAL(ReKi),      ALLOCATABLE, INTENT(IN   ) :: ReKiBuf(:)
   REAL(DbKi),      ALLOCATABLE, INTENT(IN   ) :: DbKiBuf(:)
   INTEGER(IntKi),  ALLOCATABLE, INTENT(IN   ) :: IntKiBuf(:)
-  TYPE(IceFloe_discretestatetype), INTENT(INOUT) :: OutData
+  TYPE(IceFloe_DiscreteStateType), INTENT(INOUT) :: OutData
   INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
   CHARACTER(*),    INTENT(  OUT) :: ErrMsg
     ! Local variables
@@ -623,15 +635,17 @@ ENDIF
  END SUBROUTINE IceFloe_UnPackDiscState
 
  SUBROUTINE IceFloe_CopyConstrState( SrcConstrStateData, DstConstrStateData, CtrlCode, ErrStat, ErrMsg )
-   TYPE(IceFloe_constraintstatetype), INTENT(INOUT) :: SrcConstrStateData
-   TYPE(IceFloe_constraintstatetype), INTENT(INOUT) :: DstConstrStateData
+   TYPE(IceFloe_ConstraintStateType), INTENT(IN) :: SrcConstrStateData
+   TYPE(IceFloe_ConstraintStateType), INTENT(INOUT) :: DstConstrStateData
    INTEGER(IntKi),  INTENT(IN   ) :: CtrlCode
    INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
    CHARACTER(*),    INTENT(  OUT) :: ErrMsg
 ! Local 
-   INTEGER(IntKi)                 :: i,i1,i2,i3,i4,i5,j,k
-   INTEGER(IntKi)                 :: i1_l,i2_l,i3_l,i4_l,i5_l  ! lower bounds for an array dimension
-   INTEGER(IntKi)                 :: i1_u,i2_u,i3_u,i4_u,i5_u  ! upper bounds for an array dimension
+   INTEGER(IntKi)                 :: i,j,k
+   INTEGER(IntKi)                 :: i1, i1_l, i1_u  !  bounds (upper/lower) for an array dimension 1
+   INTEGER(IntKi)                 :: i2, i2_l, i2_u  !  bounds (upper/lower) for an array dimension 2
+   INTEGER(IntKi)                 :: ErrStat2
+   CHARACTER(1024)                :: ErrMsg2
 ! 
    ErrStat = ErrID_None
    ErrMsg  = ""
@@ -639,7 +653,7 @@ ENDIF
  END SUBROUTINE IceFloe_CopyConstrState
 
  SUBROUTINE IceFloe_DestroyConstrState( ConstrStateData, ErrStat, ErrMsg )
-  TYPE(IceFloe_constraintstatetype), INTENT(INOUT) :: ConstrStateData
+  TYPE(IceFloe_ConstraintStateType), INTENT(INOUT) :: ConstrStateData
   INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
   CHARACTER(*),    INTENT(  OUT) :: ErrMsg
   INTEGER(IntKi)                 :: i, i1, i2, i3, i4, i5 
@@ -652,7 +666,7 @@ ENDIF
   REAL(ReKi),       ALLOCATABLE, INTENT(  OUT) :: ReKiBuf(:)
   REAL(DbKi),       ALLOCATABLE, INTENT(  OUT) :: DbKiBuf(:)
   INTEGER(IntKi),   ALLOCATABLE, INTENT(  OUT) :: IntKiBuf(:)
-  TYPE(IceFloe_constraintstatetype),  INTENT(INOUT) :: InData
+  TYPE(IceFloe_ConstraintStateType),  INTENT(INOUT) :: InData
   INTEGER(IntKi),   INTENT(  OUT) :: ErrStat
   CHARACTER(*),     INTENT(  OUT) :: ErrMsg
   LOGICAL,OPTIONAL, INTENT(IN   ) :: SizeOnly
@@ -694,7 +708,7 @@ ENDIF
   REAL(ReKi),      ALLOCATABLE, INTENT(IN   ) :: ReKiBuf(:)
   REAL(DbKi),      ALLOCATABLE, INTENT(IN   ) :: DbKiBuf(:)
   INTEGER(IntKi),  ALLOCATABLE, INTENT(IN   ) :: IntKiBuf(:)
-  TYPE(IceFloe_constraintstatetype), INTENT(INOUT) :: OutData
+  TYPE(IceFloe_ConstraintStateType), INTENT(INOUT) :: OutData
   INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
   CHARACTER(*),    INTENT(  OUT) :: ErrMsg
     ! Local variables
@@ -731,15 +745,17 @@ ENDIF
  END SUBROUTINE IceFloe_UnPackConstrState
 
  SUBROUTINE IceFloe_CopyOtherState( SrcOtherStateData, DstOtherStateData, CtrlCode, ErrStat, ErrMsg )
-   TYPE(IceFloe_otherstatetype), INTENT(INOUT) :: SrcOtherStateData
-   TYPE(IceFloe_otherstatetype), INTENT(INOUT) :: DstOtherStateData
+   TYPE(IceFloe_OtherStateType), INTENT(IN) :: SrcOtherStateData
+   TYPE(IceFloe_OtherStateType), INTENT(INOUT) :: DstOtherStateData
    INTEGER(IntKi),  INTENT(IN   ) :: CtrlCode
    INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
    CHARACTER(*),    INTENT(  OUT) :: ErrMsg
 ! Local 
-   INTEGER(IntKi)                 :: i,i1,i2,i3,i4,i5,j,k
-   INTEGER(IntKi)                 :: i1_l,i2_l,i3_l,i4_l,i5_l  ! lower bounds for an array dimension
-   INTEGER(IntKi)                 :: i1_u,i2_u,i3_u,i4_u,i5_u  ! upper bounds for an array dimension
+   INTEGER(IntKi)                 :: i,j,k
+   INTEGER(IntKi)                 :: i1, i1_l, i1_u  !  bounds (upper/lower) for an array dimension 1
+   INTEGER(IntKi)                 :: i2, i2_l, i2_u  !  bounds (upper/lower) for an array dimension 2
+   INTEGER(IntKi)                 :: ErrStat2
+   CHARACTER(1024)                :: ErrMsg2
 ! 
    ErrStat = ErrID_None
    ErrMsg  = ""
@@ -747,7 +763,7 @@ ENDIF
  END SUBROUTINE IceFloe_CopyOtherState
 
  SUBROUTINE IceFloe_DestroyOtherState( OtherStateData, ErrStat, ErrMsg )
-  TYPE(IceFloe_otherstatetype), INTENT(INOUT) :: OtherStateData
+  TYPE(IceFloe_OtherStateType), INTENT(INOUT) :: OtherStateData
   INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
   CHARACTER(*),    INTENT(  OUT) :: ErrMsg
   INTEGER(IntKi)                 :: i, i1, i2, i3, i4, i5 
@@ -760,7 +776,7 @@ ENDIF
   REAL(ReKi),       ALLOCATABLE, INTENT(  OUT) :: ReKiBuf(:)
   REAL(DbKi),       ALLOCATABLE, INTENT(  OUT) :: DbKiBuf(:)
   INTEGER(IntKi),   ALLOCATABLE, INTENT(  OUT) :: IntKiBuf(:)
-  TYPE(IceFloe_otherstatetype),  INTENT(INOUT) :: InData
+  TYPE(IceFloe_OtherStateType),  INTENT(INOUT) :: InData
   INTEGER(IntKi),   INTENT(  OUT) :: ErrStat
   CHARACTER(*),     INTENT(  OUT) :: ErrMsg
   LOGICAL,OPTIONAL, INTENT(IN   ) :: SizeOnly
@@ -802,7 +818,7 @@ ENDIF
   REAL(ReKi),      ALLOCATABLE, INTENT(IN   ) :: ReKiBuf(:)
   REAL(DbKi),      ALLOCATABLE, INTENT(IN   ) :: DbKiBuf(:)
   INTEGER(IntKi),  ALLOCATABLE, INTENT(IN   ) :: IntKiBuf(:)
-  TYPE(IceFloe_otherstatetype), INTENT(INOUT) :: OutData
+  TYPE(IceFloe_OtherStateType), INTENT(INOUT) :: OutData
   INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
   CHARACTER(*),    INTENT(  OUT) :: ErrMsg
     ! Local variables
@@ -839,15 +855,17 @@ ENDIF
  END SUBROUTINE IceFloe_UnPackOtherState
 
  SUBROUTINE IceFloe_CopyParam( SrcParamData, DstParamData, CtrlCode, ErrStat, ErrMsg )
-   TYPE(IceFloe_parametertype), INTENT(INOUT) :: SrcParamData
-   TYPE(IceFloe_parametertype), INTENT(INOUT) :: DstParamData
+   TYPE(IceFloe_ParameterType), INTENT(IN) :: SrcParamData
+   TYPE(IceFloe_ParameterType), INTENT(INOUT) :: DstParamData
    INTEGER(IntKi),  INTENT(IN   ) :: CtrlCode
    INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
    CHARACTER(*),    INTENT(  OUT) :: ErrMsg
 ! Local 
-   INTEGER(IntKi)                 :: i,i1,i2,i3,i4,i5,j,k
-   INTEGER(IntKi)                 :: i1_l,i2_l,i3_l,i4_l,i5_l  ! lower bounds for an array dimension
-   INTEGER(IntKi)                 :: i1_u,i2_u,i3_u,i4_u,i5_u  ! upper bounds for an array dimension
+   INTEGER(IntKi)                 :: i,j,k
+   INTEGER(IntKi)                 :: i1, i1_l, i1_u  !  bounds (upper/lower) for an array dimension 1
+   INTEGER(IntKi)                 :: i2, i2_l, i2_u  !  bounds (upper/lower) for an array dimension 2
+   INTEGER(IntKi)                 :: ErrStat2
+   CHARACTER(1024)                :: ErrMsg2
 ! 
    ErrStat = ErrID_None
    ErrMsg  = ""
@@ -857,10 +875,9 @@ IF (ALLOCATED(SrcParamData%loadSeries)) THEN
    i2_l = LBOUND(SrcParamData%loadSeries,2)
    i2_u = UBOUND(SrcParamData%loadSeries,2)
    IF (.NOT. ALLOCATED(DstParamData%loadSeries)) THEN 
-      ALLOCATE(DstParamData%loadSeries(i1_l:i1_u,i2_l:i2_u),STAT=ErrStat)
-      IF (ErrStat /= 0) THEN 
-         ErrStat = ErrID_Fatal 
-         ErrMsg = 'IceFloe_CopyParam: Error allocating DstParamData%loadSeries.'
+      ALLOCATE(DstParamData%loadSeries(i1_l:i1_u,i2_l:i2_u),STAT=ErrStat2)
+      IF (ErrStat2 /= 0) THEN 
+         CALL SetErrStat(ErrID_Fatal, 'Error allocating DstParamData%loadSeries.', ErrStat, ErrMsg,'IceFloe_CopyParam')
          RETURN
       END IF
    END IF
@@ -880,10 +897,9 @@ IF (ALLOCATED(SrcParamData%legX)) THEN
    i1_l = LBOUND(SrcParamData%legX,1)
    i1_u = UBOUND(SrcParamData%legX,1)
    IF (.NOT. ALLOCATED(DstParamData%legX)) THEN 
-      ALLOCATE(DstParamData%legX(i1_l:i1_u),STAT=ErrStat)
-      IF (ErrStat /= 0) THEN 
-         ErrStat = ErrID_Fatal 
-         ErrMsg = 'IceFloe_CopyParam: Error allocating DstParamData%legX.'
+      ALLOCATE(DstParamData%legX(i1_l:i1_u),STAT=ErrStat2)
+      IF (ErrStat2 /= 0) THEN 
+         CALL SetErrStat(ErrID_Fatal, 'Error allocating DstParamData%legX.', ErrStat, ErrMsg,'IceFloe_CopyParam')
          RETURN
       END IF
    END IF
@@ -893,10 +909,9 @@ IF (ALLOCATED(SrcParamData%legY)) THEN
    i1_l = LBOUND(SrcParamData%legY,1)
    i1_u = UBOUND(SrcParamData%legY,1)
    IF (.NOT. ALLOCATED(DstParamData%legY)) THEN 
-      ALLOCATE(DstParamData%legY(i1_l:i1_u),STAT=ErrStat)
-      IF (ErrStat /= 0) THEN 
-         ErrStat = ErrID_Fatal 
-         ErrMsg = 'IceFloe_CopyParam: Error allocating DstParamData%legY.'
+      ALLOCATE(DstParamData%legY(i1_l:i1_u),STAT=ErrStat2)
+      IF (ErrStat2 /= 0) THEN 
+         CALL SetErrStat(ErrID_Fatal, 'Error allocating DstParamData%legY.', ErrStat, ErrMsg,'IceFloe_CopyParam')
          RETURN
       END IF
    END IF
@@ -906,10 +921,9 @@ IF (ALLOCATED(SrcParamData%ks)) THEN
    i1_l = LBOUND(SrcParamData%ks,1)
    i1_u = UBOUND(SrcParamData%ks,1)
    IF (.NOT. ALLOCATED(DstParamData%ks)) THEN 
-      ALLOCATE(DstParamData%ks(i1_l:i1_u),STAT=ErrStat)
-      IF (ErrStat /= 0) THEN 
-         ErrStat = ErrID_Fatal 
-         ErrMsg = 'IceFloe_CopyParam: Error allocating DstParamData%ks.'
+      ALLOCATE(DstParamData%ks(i1_l:i1_u),STAT=ErrStat2)
+      IF (ErrStat2 /= 0) THEN 
+         CALL SetErrStat(ErrID_Fatal, 'Error allocating DstParamData%ks.', ErrStat, ErrMsg,'IceFloe_CopyParam')
          RETURN
       END IF
    END IF
@@ -923,7 +937,7 @@ ENDIF
  END SUBROUTINE IceFloe_CopyParam
 
  SUBROUTINE IceFloe_DestroyParam( ParamData, ErrStat, ErrMsg )
-  TYPE(IceFloe_parametertype), INTENT(INOUT) :: ParamData
+  TYPE(IceFloe_ParameterType), INTENT(INOUT) :: ParamData
   INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
   CHARACTER(*),    INTENT(  OUT) :: ErrMsg
   INTEGER(IntKi)                 :: i, i1, i2, i3, i4, i5 
@@ -948,7 +962,7 @@ ENDIF
   REAL(ReKi),       ALLOCATABLE, INTENT(  OUT) :: ReKiBuf(:)
   REAL(DbKi),       ALLOCATABLE, INTENT(  OUT) :: DbKiBuf(:)
   INTEGER(IntKi),   ALLOCATABLE, INTENT(  OUT) :: IntKiBuf(:)
-  TYPE(IceFloe_parametertype),  INTENT(INOUT) :: InData
+  TYPE(IceFloe_ParameterType),  INTENT(INOUT) :: InData
   INTEGER(IntKi),   INTENT(  OUT) :: ErrStat
   CHARACTER(*),     INTENT(  OUT) :: ErrMsg
   LOGICAL,OPTIONAL, INTENT(IN   ) :: SizeOnly
@@ -978,7 +992,7 @@ ENDIF
   Re_BufSz  = 0
   Db_BufSz  = 0
   Int_BufSz  = 0
-  Re_BufSz    = Re_BufSz    + SIZE( InData%loadSeries )  ! loadSeries 
+  IF ( ALLOCATED(InData%loadSeries) )   Re_BufSz    = Re_BufSz    + SIZE( InData%loadSeries )  ! loadSeries 
   Re_BufSz   = Re_BufSz   + 1  ! iceVel
   Re_BufSz   = Re_BufSz   + 1  ! iceDirection
   Re_BufSz   = Re_BufSz   + 1  ! minStrength
@@ -989,12 +1003,14 @@ ENDIF
   Re_BufSz   = Re_BufSz   + 1  ! C(4)
   Re_BufSz   = Re_BufSz   + 1  ! dt
   Re_BufSz   = Re_BufSz   + 1  ! rampTime
-  Re_BufSz    = Re_BufSz    + SIZE( InData%legX )  ! legX 
-  Re_BufSz    = Re_BufSz    + SIZE( InData%legY )  ! legY 
-  Re_BufSz    = Re_BufSz    + SIZE( InData%ks )  ! ks 
+  IF ( ALLOCATED(InData%legX) )   Re_BufSz    = Re_BufSz    + SIZE( InData%legX )  ! legX 
+  IF ( ALLOCATED(InData%legY) )   Re_BufSz    = Re_BufSz    + SIZE( InData%legY )  ! legY 
+  IF ( ALLOCATED(InData%ks) )   Re_BufSz    = Re_BufSz    + SIZE( InData%ks )  ! ks 
   Int_BufSz  = Int_BufSz  + 1  ! numLegs
   Int_BufSz  = Int_BufSz  + 1  ! iceType
   Int_BufSz  = Int_BufSz  + 1  ! logUnitNum
+  Int_BufSz  = Int_BufSz  + 1  ! singleLoad
+  Int_BufSz  = Int_BufSz  + 1  ! initFlag
   IF ( Re_BufSz  .GT. 0 ) ALLOCATE( ReKiBuf(  Re_BufSz  ) )
   IF ( Db_BufSz  .GT. 0 ) ALLOCATE( DbKiBuf(  Db_BufSz  ) )
   IF ( Int_BufSz .GT. 0 ) ALLOCATE( IntKiBuf( Int_BufSz ) )
@@ -1040,13 +1056,17 @@ ENDIF
   Int_Xferred   = Int_Xferred   + 1
   IF ( .NOT. OnlySize ) IntKiBuf ( Int_Xferred:Int_Xferred+(1)-1 ) = (InData%logUnitNum )
   Int_Xferred   = Int_Xferred   + 1
+  IF ( .NOT. OnlySize ) IntKiBuf ( Int_Xferred:Int_Xferred+(1)-1 ) = TRANSFER( (InData%singleLoad ), IntKiBuf(1), 1)
+  Int_Xferred   = Int_Xferred   + 1
+  IF ( .NOT. OnlySize ) IntKiBuf ( Int_Xferred:Int_Xferred+(1)-1 ) = TRANSFER( (InData%initFlag ), IntKiBuf(1), 1)
+  Int_Xferred   = Int_Xferred   + 1
  END SUBROUTINE IceFloe_PackParam
 
  SUBROUTINE IceFloe_UnPackParam( ReKiBuf, DbKiBuf, IntKiBuf, Outdata, ErrStat, ErrMsg )
   REAL(ReKi),      ALLOCATABLE, INTENT(IN   ) :: ReKiBuf(:)
   REAL(DbKi),      ALLOCATABLE, INTENT(IN   ) :: DbKiBuf(:)
   INTEGER(IntKi),  ALLOCATABLE, INTENT(IN   ) :: IntKiBuf(:)
-  TYPE(IceFloe_parametertype), INTENT(INOUT) :: OutData
+  TYPE(IceFloe_ParameterType), INTENT(INOUT) :: OutData
   INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
   CHARACTER(*),    INTENT(  OUT) :: ErrMsg
     ! Local variables
@@ -1076,7 +1096,8 @@ ENDIF
   Db_BufSz  = 0
   Int_BufSz  = 0
   IF ( ALLOCATED(OutData%loadSeries) ) THEN
-  ALLOCATE(mask2(SIZE(OutData%loadSeries,1),SIZE(OutData%loadSeries,2))); mask2 = .TRUE.
+  ALLOCATE(mask2(SIZE(OutData%loadSeries,1),SIZE(OutData%loadSeries,2)))
+  mask2 = .TRUE.
     OutData%loadSeries = UNPACK(ReKiBuf( Re_Xferred:Re_Xferred+(SIZE(OutData%loadSeries))-1 ),mask2,OutData%loadSeries)
   DEALLOCATE(mask2)
     Re_Xferred   = Re_Xferred   + SIZE(OutData%loadSeries)
@@ -1102,19 +1123,22 @@ ENDIF
   OutData%rampTime = ReKiBuf ( Re_Xferred )
   Re_Xferred   = Re_Xferred   + 1
   IF ( ALLOCATED(OutData%legX) ) THEN
-  ALLOCATE(mask1(SIZE(OutData%legX,1))); mask1 = .TRUE.
+  ALLOCATE(mask1(SIZE(OutData%legX,1)))
+  mask1 = .TRUE.
     OutData%legX = UNPACK(ReKiBuf( Re_Xferred:Re_Xferred+(SIZE(OutData%legX))-1 ),mask1,OutData%legX)
   DEALLOCATE(mask1)
     Re_Xferred   = Re_Xferred   + SIZE(OutData%legX)
   ENDIF
   IF ( ALLOCATED(OutData%legY) ) THEN
-  ALLOCATE(mask1(SIZE(OutData%legY,1))); mask1 = .TRUE.
+  ALLOCATE(mask1(SIZE(OutData%legY,1)))
+  mask1 = .TRUE.
     OutData%legY = UNPACK(ReKiBuf( Re_Xferred:Re_Xferred+(SIZE(OutData%legY))-1 ),mask1,OutData%legY)
   DEALLOCATE(mask1)
     Re_Xferred   = Re_Xferred   + SIZE(OutData%legY)
   ENDIF
   IF ( ALLOCATED(OutData%ks) ) THEN
-  ALLOCATE(mask1(SIZE(OutData%ks,1))); mask1 = .TRUE.
+  ALLOCATE(mask1(SIZE(OutData%ks,1)))
+  mask1 = .TRUE.
     OutData%ks = UNPACK(ReKiBuf( Re_Xferred:Re_Xferred+(SIZE(OutData%ks))-1 ),mask1,OutData%ks)
   DEALLOCATE(mask1)
     Re_Xferred   = Re_Xferred   + SIZE(OutData%ks)
@@ -1131,23 +1155,27 @@ ENDIF
  END SUBROUTINE IceFloe_UnPackParam
 
  SUBROUTINE IceFloe_CopyInput( SrcInputData, DstInputData, CtrlCode, ErrStat, ErrMsg )
-   TYPE(IceFloe_inputtype), INTENT(INOUT) :: SrcInputData
-   TYPE(IceFloe_inputtype), INTENT(INOUT) :: DstInputData
+   TYPE(IceFloe_InputType), INTENT(INOUT) :: SrcInputData
+   TYPE(IceFloe_InputType), INTENT(INOUT) :: DstInputData
    INTEGER(IntKi),  INTENT(IN   ) :: CtrlCode
    INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
    CHARACTER(*),    INTENT(  OUT) :: ErrMsg
 ! Local 
-   INTEGER(IntKi)                 :: i,i1,i2,i3,i4,i5,j,k
-   INTEGER(IntKi)                 :: i1_l,i2_l,i3_l,i4_l,i5_l  ! lower bounds for an array dimension
-   INTEGER(IntKi)                 :: i1_u,i2_u,i3_u,i4_u,i5_u  ! upper bounds for an array dimension
+   INTEGER(IntKi)                 :: i,j,k
+   INTEGER(IntKi)                 :: i1, i1_l, i1_u  !  bounds (upper/lower) for an array dimension 1
+   INTEGER(IntKi)                 :: i2, i2_l, i2_u  !  bounds (upper/lower) for an array dimension 2
+   INTEGER(IntKi)                 :: ErrStat2
+   CHARACTER(1024)                :: ErrMsg2
 ! 
    ErrStat = ErrID_None
    ErrMsg  = ""
-     CALL MeshCopy( SrcInputData%iceMesh, DstInputData%iceMesh, CtrlCode, ErrStat, ErrMsg )
+     CALL MeshCopy( SrcInputData%iceMesh, DstInputData%iceMesh, CtrlCode, ErrStat2, ErrMsg2 )
+         CALL SetErrStat(ErrStat2, ErrMsg2, ErrStat, ErrMsg,'IceFloe_CopyInput:iceMesh')
+         IF (ErrStat>=AbortErrLev) RETURN
  END SUBROUTINE IceFloe_CopyInput
 
  SUBROUTINE IceFloe_DestroyInput( InputData, ErrStat, ErrMsg )
-  TYPE(IceFloe_inputtype), INTENT(INOUT) :: InputData
+  TYPE(IceFloe_InputType), INTENT(INOUT) :: InputData
   INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
   CHARACTER(*),    INTENT(  OUT) :: ErrMsg
   INTEGER(IntKi)                 :: i, i1, i2, i3, i4, i5 
@@ -1161,7 +1189,7 @@ ENDIF
   REAL(ReKi),       ALLOCATABLE, INTENT(  OUT) :: ReKiBuf(:)
   REAL(DbKi),       ALLOCATABLE, INTENT(  OUT) :: DbKiBuf(:)
   INTEGER(IntKi),   ALLOCATABLE, INTENT(  OUT) :: IntKiBuf(:)
-  TYPE(IceFloe_inputtype),  INTENT(INOUT) :: InData
+  TYPE(IceFloe_InputType),  INTENT(INOUT) :: InData
   INTEGER(IntKi),   INTENT(  OUT) :: ErrStat
   CHARACTER(*),     INTENT(  OUT) :: ErrMsg
   LOGICAL,OPTIONAL, INTENT(IN   ) :: SizeOnly
@@ -1227,7 +1255,7 @@ ENDIF
   REAL(ReKi),      ALLOCATABLE, INTENT(IN   ) :: ReKiBuf(:)
   REAL(DbKi),      ALLOCATABLE, INTENT(IN   ) :: DbKiBuf(:)
   INTEGER(IntKi),  ALLOCATABLE, INTENT(IN   ) :: IntKiBuf(:)
-  TYPE(IceFloe_inputtype), INTENT(INOUT) :: OutData
+  TYPE(IceFloe_InputType), INTENT(INOUT) :: OutData
   INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
   CHARACTER(*),    INTENT(  OUT) :: ErrMsg
     ! Local variables
@@ -1283,27 +1311,30 @@ ENDIF
  END SUBROUTINE IceFloe_UnPackInput
 
  SUBROUTINE IceFloe_CopyOutput( SrcOutputData, DstOutputData, CtrlCode, ErrStat, ErrMsg )
-   TYPE(IceFloe_outputtype), INTENT(INOUT) :: SrcOutputData
-   TYPE(IceFloe_outputtype), INTENT(INOUT) :: DstOutputData
+   TYPE(IceFloe_OutputType), INTENT(INOUT) :: SrcOutputData
+   TYPE(IceFloe_OutputType), INTENT(INOUT) :: DstOutputData
    INTEGER(IntKi),  INTENT(IN   ) :: CtrlCode
    INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
    CHARACTER(*),    INTENT(  OUT) :: ErrMsg
 ! Local 
-   INTEGER(IntKi)                 :: i,i1,i2,i3,i4,i5,j,k
-   INTEGER(IntKi)                 :: i1_l,i2_l,i3_l,i4_l,i5_l  ! lower bounds for an array dimension
-   INTEGER(IntKi)                 :: i1_u,i2_u,i3_u,i4_u,i5_u  ! upper bounds for an array dimension
+   INTEGER(IntKi)                 :: i,j,k
+   INTEGER(IntKi)                 :: i1, i1_l, i1_u  !  bounds (upper/lower) for an array dimension 1
+   INTEGER(IntKi)                 :: i2, i2_l, i2_u  !  bounds (upper/lower) for an array dimension 2
+   INTEGER(IntKi)                 :: ErrStat2
+   CHARACTER(1024)                :: ErrMsg2
 ! 
    ErrStat = ErrID_None
    ErrMsg  = ""
-     CALL MeshCopy( SrcOutputData%iceMesh, DstOutputData%iceMesh, CtrlCode, ErrStat, ErrMsg )
+     CALL MeshCopy( SrcOutputData%iceMesh, DstOutputData%iceMesh, CtrlCode, ErrStat2, ErrMsg2 )
+         CALL SetErrStat(ErrStat2, ErrMsg2, ErrStat, ErrMsg,'IceFloe_CopyOutput:iceMesh')
+         IF (ErrStat>=AbortErrLev) RETURN
 IF (ALLOCATED(SrcOutputData%WriteOutput)) THEN
    i1_l = LBOUND(SrcOutputData%WriteOutput,1)
    i1_u = UBOUND(SrcOutputData%WriteOutput,1)
    IF (.NOT. ALLOCATED(DstOutputData%WriteOutput)) THEN 
-      ALLOCATE(DstOutputData%WriteOutput(i1_l:i1_u),STAT=ErrStat)
-      IF (ErrStat /= 0) THEN 
-         ErrStat = ErrID_Fatal 
-         ErrMsg = 'IceFloe_CopyOutput: Error allocating DstOutputData%WriteOutput.'
+      ALLOCATE(DstOutputData%WriteOutput(i1_l:i1_u),STAT=ErrStat2)
+      IF (ErrStat2 /= 0) THEN 
+         CALL SetErrStat(ErrID_Fatal, 'Error allocating DstOutputData%WriteOutput.', ErrStat, ErrMsg,'IceFloe_CopyOutput')
          RETURN
       END IF
    END IF
@@ -1312,7 +1343,7 @@ ENDIF
  END SUBROUTINE IceFloe_CopyOutput
 
  SUBROUTINE IceFloe_DestroyOutput( OutputData, ErrStat, ErrMsg )
-  TYPE(IceFloe_outputtype), INTENT(INOUT) :: OutputData
+  TYPE(IceFloe_OutputType), INTENT(INOUT) :: OutputData
   INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
   CHARACTER(*),    INTENT(  OUT) :: ErrMsg
   INTEGER(IntKi)                 :: i, i1, i2, i3, i4, i5 
@@ -1329,7 +1360,7 @@ ENDIF
   REAL(ReKi),       ALLOCATABLE, INTENT(  OUT) :: ReKiBuf(:)
   REAL(DbKi),       ALLOCATABLE, INTENT(  OUT) :: DbKiBuf(:)
   INTEGER(IntKi),   ALLOCATABLE, INTENT(  OUT) :: IntKiBuf(:)
-  TYPE(IceFloe_outputtype),  INTENT(INOUT) :: InData
+  TYPE(IceFloe_OutputType),  INTENT(INOUT) :: InData
   INTEGER(IntKi),   INTENT(  OUT) :: ErrStat
   CHARACTER(*),     INTENT(  OUT) :: ErrMsg
   LOGICAL,OPTIONAL, INTENT(IN   ) :: SizeOnly
@@ -1370,7 +1401,7 @@ ENDIF
   IF(ALLOCATED(Re_iceMesh_Buf))  DEALLOCATE(Re_iceMesh_Buf)
   IF(ALLOCATED(Db_iceMesh_Buf))  DEALLOCATE(Db_iceMesh_Buf)
   IF(ALLOCATED(Int_iceMesh_Buf)) DEALLOCATE(Int_iceMesh_Buf)
-  Re_BufSz    = Re_BufSz    + SIZE( InData%WriteOutput )  ! WriteOutput 
+  IF ( ALLOCATED(InData%WriteOutput) )   Re_BufSz    = Re_BufSz    + SIZE( InData%WriteOutput )  ! WriteOutput 
   IF ( Re_BufSz  .GT. 0 ) ALLOCATE( ReKiBuf(  Re_BufSz  ) )
   IF ( Db_BufSz  .GT. 0 ) ALLOCATE( DbKiBuf(  Db_BufSz  ) )
   IF ( Int_BufSz .GT. 0 ) ALLOCATE( IntKiBuf( Int_BufSz ) )
@@ -1400,7 +1431,7 @@ ENDIF
   REAL(ReKi),      ALLOCATABLE, INTENT(IN   ) :: ReKiBuf(:)
   REAL(DbKi),      ALLOCATABLE, INTENT(IN   ) :: DbKiBuf(:)
   INTEGER(IntKi),  ALLOCATABLE, INTENT(IN   ) :: IntKiBuf(:)
-  TYPE(IceFloe_outputtype), INTENT(INOUT) :: OutData
+  TYPE(IceFloe_OutputType), INTENT(INOUT) :: OutData
   INTEGER(IntKi),  INTENT(  OUT) :: ErrStat
   CHARACTER(*),    INTENT(  OUT) :: ErrMsg
     ! Local variables
@@ -1451,7 +1482,8 @@ ENDIF
   IF( ALLOCATED(Db_iceMesh_Buf) )  DEALLOCATE(Db_iceMesh_Buf)
   IF( ALLOCATED(Int_iceMesh_Buf) ) DEALLOCATE(Int_iceMesh_Buf)
   IF ( ALLOCATED(OutData%WriteOutput) ) THEN
-  ALLOCATE(mask1(SIZE(OutData%WriteOutput,1))); mask1 = .TRUE.
+  ALLOCATE(mask1(SIZE(OutData%WriteOutput,1)))
+  mask1 = .TRUE.
     OutData%WriteOutput = UNPACK(ReKiBuf( Re_Xferred:Re_Xferred+(SIZE(OutData%WriteOutput))-1 ),mask1,OutData%WriteOutput)
   DEALLOCATE(mask1)
     Re_Xferred   = Re_Xferred   + SIZE(OutData%WriteOutput)
@@ -1490,66 +1522,8 @@ ENDIF
  INTEGER(IntKi)                 :: order    ! order of polynomial fit (max 2)
  REAL(DbKi)                                 :: b0       ! temporary for extrapolation/interpolation
  REAL(DbKi)                                 :: c0       ! temporary for extrapolation/interpolation
- REAL(DbKi),ALLOCATABLE,DIMENSION(:)        :: b1       ! temporary for extrapolation/interpolation
- REAL(DbKi),ALLOCATABLE,DIMENSION(:)        :: c1       ! temporary for extrapolation/interpolation
- REAL(DbKi),ALLOCATABLE,DIMENSION(:,:)      :: b2       ! temporary for extrapolation/interpolation
- REAL(DbKi),ALLOCATABLE,DIMENSION(:,:)      :: c2       ! temporary for extrapolation/interpolation
- REAL(DbKi),ALLOCATABLE,DIMENSION(:,:,:)    :: b3       ! temporary for extrapolation/interpolation
- REAL(DbKi),ALLOCATABLE,DIMENSION(:,:,:)    :: c3       ! temporary for extrapolation/interpolation
- REAL(DbKi),ALLOCATABLE,DIMENSION(:,:,:,:)  :: b4       ! temporary for extrapolation/interpolation
- REAL(DbKi),ALLOCATABLE,DIMENSION(:,:,:,:)  :: c4       ! temporary for extrapolation/interpolation
- REAL(DbKi),ALLOCATABLE,DIMENSION(:,:,:,:,:):: b5       ! temporary for extrapolation/interpolation
- REAL(DbKi),ALLOCATABLE,DIMENSION(:,:,:,:,:):: c5       ! temporary for extrapolation/interpolation
- INTEGER                                    :: i01    ! dim1 level 0 counter variable for arrays of ddts
- INTEGER                                    :: i11    ! dim1 level 1 counter variable for arrays of ddts
- INTEGER                                    :: i21    ! dim1 level 2 counter variable for arrays of ddts
- INTEGER                                    :: i31    ! dim1 level 3 counter variable for arrays of ddts
- INTEGER                                    :: i41    ! dim1 level 4 counter variable for arrays of ddts
- INTEGER                                    :: i51    ! dim1 level 5 counter variable for arrays of ddts
- INTEGER                                    :: i61    ! dim1 level 6 counter variable for arrays of ddts
- INTEGER                                    :: i71    ! dim1 level 7 counter variable for arrays of ddts
- INTEGER                                    :: i81    ! dim1 level 8 counter variable for arrays of ddts
- INTEGER                                    :: i91    ! dim1 level 9 counter variable for arrays of ddts
- INTEGER                                    :: i02    ! dim2 level 0 counter variable for arrays of ddts
- INTEGER                                    :: i12    ! dim2 level 1 counter variable for arrays of ddts
- INTEGER                                    :: i22    ! dim2 level 2 counter variable for arrays of ddts
- INTEGER                                    :: i32    ! dim2 level 3 counter variable for arrays of ddts
- INTEGER                                    :: i42    ! dim2 level 4 counter variable for arrays of ddts
- INTEGER                                    :: i52    ! dim2 level 5 counter variable for arrays of ddts
- INTEGER                                    :: i62    ! dim2 level 6 counter variable for arrays of ddts
- INTEGER                                    :: i72    ! dim2 level 7 counter variable for arrays of ddts
- INTEGER                                    :: i82    ! dim2 level 8 counter variable for arrays of ddts
- INTEGER                                    :: i92    ! dim2 level 9 counter variable for arrays of ddts
- INTEGER                                    :: i03    ! dim3 level 0 counter variable for arrays of ddts
- INTEGER                                    :: i13    ! dim3 level 1 counter variable for arrays of ddts
- INTEGER                                    :: i23    ! dim3 level 2 counter variable for arrays of ddts
- INTEGER                                    :: i33    ! dim3 level 3 counter variable for arrays of ddts
- INTEGER                                    :: i43    ! dim3 level 4 counter variable for arrays of ddts
- INTEGER                                    :: i53    ! dim3 level 5 counter variable for arrays of ddts
- INTEGER                                    :: i63    ! dim3 level 6 counter variable for arrays of ddts
- INTEGER                                    :: i73    ! dim3 level 7 counter variable for arrays of ddts
- INTEGER                                    :: i83    ! dim3 level 8 counter variable for arrays of ddts
- INTEGER                                    :: i93    ! dim3 level 9 counter variable for arrays of ddts
- INTEGER                                    :: i04    ! dim4 level 0 counter variable for arrays of ddts
- INTEGER                                    :: i14    ! dim4 level 1 counter variable for arrays of ddts
- INTEGER                                    :: i24    ! dim4 level 2 counter variable for arrays of ddts
- INTEGER                                    :: i34    ! dim4 level 3 counter variable for arrays of ddts
- INTEGER                                    :: i44    ! dim4 level 4 counter variable for arrays of ddts
- INTEGER                                    :: i54    ! dim4 level 5 counter variable for arrays of ddts
- INTEGER                                    :: i64    ! dim4 level 6 counter variable for arrays of ddts
- INTEGER                                    :: i74    ! dim4 level 7 counter variable for arrays of ddts
- INTEGER                                    :: i84    ! dim4 level 8 counter variable for arrays of ddts
- INTEGER                                    :: i94    ! dim4 level 9 counter variable for arrays of ddts
- INTEGER                                    :: i05    ! dim5 level 0 counter variable for arrays of ddts
- INTEGER                                    :: i15    ! dim5 level 1 counter variable for arrays of ddts
- INTEGER                                    :: i25    ! dim5 level 2 counter variable for arrays of ddts
- INTEGER                                    :: i35    ! dim5 level 3 counter variable for arrays of ddts
- INTEGER                                    :: i45    ! dim5 level 4 counter variable for arrays of ddts
- INTEGER                                    :: i55    ! dim5 level 5 counter variable for arrays of ddts
- INTEGER                                    :: i65    ! dim5 level 6 counter variable for arrays of ddts
- INTEGER                                    :: i75    ! dim5 level 7 counter variable for arrays of ddts
- INTEGER                                    :: i85    ! dim5 level 8 counter variable for arrays of ddts
- INTEGER                                    :: i95    ! dim5 level 9 counter variable for arrays of ddts
+ INTEGER(IntKi)                             :: ErrStat2 ! local errors
+ CHARACTER(1024)                            :: ErrMsg2  ! local errors
     ! Initialize ErrStat
  ErrStat = ErrID_None
  ErrMsg  = ""
@@ -1570,14 +1544,18 @@ ENDIF
  endif
  order = SIZE(u) - 1
  IF ( order .eq. 0 ) THEN
-  CALL MeshCopy(u(1)%iceMesh, u_out%iceMesh, MESH_UPDATECOPY, ErrStat, ErrMsg )
+  CALL MeshCopy(u(1)%iceMesh, u_out%iceMesh, MESH_UPDATECOPY, ErrStat2, ErrMsg2 )
+         CALL SetErrStat(ErrStat2, ErrMsg2, ErrStat, ErrMsg,'IceFloe_Input_ExtrapInterp:%iceMesh')
+         IF (ErrStat>=AbortErrLev) RETURN
  ELSE IF ( order .eq. 1 ) THEN
   IF ( EqualRealNos( t(1), t(2) ) ) THEN
     ErrStat = ErrID_Fatal
     ErrMsg  = ' Error in IceFloe_Input_ExtrapInterp: t(1) must not equal t(2) to avoid a division-by-zero error.'
     RETURN
   END IF
-  CALL MeshExtrapInterp1(u(1)%iceMesh, u(2)%iceMesh, tin, u_out%iceMesh, tin_out, ErrStat, ErrMsg )
+  CALL MeshExtrapInterp1(u(1)%iceMesh, u(2)%iceMesh, tin, u_out%iceMesh, tin_out, ErrStat2, ErrMsg2 )
+         CALL SetErrStat(ErrStat2, ErrMsg2, ErrStat, ErrMsg,'IceFloe_Input_ExtrapInterp:%iceMesh')
+         IF (ErrStat>=AbortErrLev) RETURN
  ELSE IF ( order .eq. 2 ) THEN
   IF ( EqualRealNos( t(1), t(2) ) ) THEN
     ErrStat = ErrID_Fatal
@@ -1594,7 +1572,9 @@ ENDIF
     ErrMsg  = ' Error in IceFloe_Input_ExtrapInterp: t(1) must not equal t(3) to avoid a division-by-zero error.'
     RETURN
   END IF
-  CALL MeshExtrapInterp2(u(1)%iceMesh, u(2)%iceMesh, u(3)%iceMesh, tin, u_out%iceMesh, tin_out, ErrStat, ErrMsg )
+  CALL MeshExtrapInterp2(u(1)%iceMesh, u(2)%iceMesh, u(3)%iceMesh, tin, u_out%iceMesh, tin_out, ErrStat2, ErrMsg2 )
+         CALL SetErrStat(ErrStat2, ErrMsg2, ErrStat, ErrMsg,'IceFloe_Input_ExtrapInterp:%iceMesh')
+         IF (ErrStat>=AbortErrLev) RETURN
  ELSE 
    ErrStat = ErrID_Fatal
    ErrMsg = ' order must be less than 3 in IceFloe_Input_ExtrapInterp '
@@ -1633,64 +1613,8 @@ ENDIF
  REAL(DbKi)                                 :: c0       ! temporary for extrapolation/interpolation
  REAL(DbKi),ALLOCATABLE,DIMENSION(:)        :: b1       ! temporary for extrapolation/interpolation
  REAL(DbKi),ALLOCATABLE,DIMENSION(:)        :: c1       ! temporary for extrapolation/interpolation
- REAL(DbKi),ALLOCATABLE,DIMENSION(:,:)      :: b2       ! temporary for extrapolation/interpolation
- REAL(DbKi),ALLOCATABLE,DIMENSION(:,:)      :: c2       ! temporary for extrapolation/interpolation
- REAL(DbKi),ALLOCATABLE,DIMENSION(:,:,:)    :: b3       ! temporary for extrapolation/interpolation
- REAL(DbKi),ALLOCATABLE,DIMENSION(:,:,:)    :: c3       ! temporary for extrapolation/interpolation
- REAL(DbKi),ALLOCATABLE,DIMENSION(:,:,:,:)  :: b4       ! temporary for extrapolation/interpolation
- REAL(DbKi),ALLOCATABLE,DIMENSION(:,:,:,:)  :: c4       ! temporary for extrapolation/interpolation
- REAL(DbKi),ALLOCATABLE,DIMENSION(:,:,:,:,:):: b5       ! temporary for extrapolation/interpolation
- REAL(DbKi),ALLOCATABLE,DIMENSION(:,:,:,:,:):: c5       ! temporary for extrapolation/interpolation
- INTEGER                                    :: i01    ! dim1 level 0 counter variable for arrays of ddts
- INTEGER                                    :: i11    ! dim1 level 1 counter variable for arrays of ddts
- INTEGER                                    :: i21    ! dim1 level 2 counter variable for arrays of ddts
- INTEGER                                    :: i31    ! dim1 level 3 counter variable for arrays of ddts
- INTEGER                                    :: i41    ! dim1 level 4 counter variable for arrays of ddts
- INTEGER                                    :: i51    ! dim1 level 5 counter variable for arrays of ddts
- INTEGER                                    :: i61    ! dim1 level 6 counter variable for arrays of ddts
- INTEGER                                    :: i71    ! dim1 level 7 counter variable for arrays of ddts
- INTEGER                                    :: i81    ! dim1 level 8 counter variable for arrays of ddts
- INTEGER                                    :: i91    ! dim1 level 9 counter variable for arrays of ddts
- INTEGER                                    :: i02    ! dim2 level 0 counter variable for arrays of ddts
- INTEGER                                    :: i12    ! dim2 level 1 counter variable for arrays of ddts
- INTEGER                                    :: i22    ! dim2 level 2 counter variable for arrays of ddts
- INTEGER                                    :: i32    ! dim2 level 3 counter variable for arrays of ddts
- INTEGER                                    :: i42    ! dim2 level 4 counter variable for arrays of ddts
- INTEGER                                    :: i52    ! dim2 level 5 counter variable for arrays of ddts
- INTEGER                                    :: i62    ! dim2 level 6 counter variable for arrays of ddts
- INTEGER                                    :: i72    ! dim2 level 7 counter variable for arrays of ddts
- INTEGER                                    :: i82    ! dim2 level 8 counter variable for arrays of ddts
- INTEGER                                    :: i92    ! dim2 level 9 counter variable for arrays of ddts
- INTEGER                                    :: i03    ! dim3 level 0 counter variable for arrays of ddts
- INTEGER                                    :: i13    ! dim3 level 1 counter variable for arrays of ddts
- INTEGER                                    :: i23    ! dim3 level 2 counter variable for arrays of ddts
- INTEGER                                    :: i33    ! dim3 level 3 counter variable for arrays of ddts
- INTEGER                                    :: i43    ! dim3 level 4 counter variable for arrays of ddts
- INTEGER                                    :: i53    ! dim3 level 5 counter variable for arrays of ddts
- INTEGER                                    :: i63    ! dim3 level 6 counter variable for arrays of ddts
- INTEGER                                    :: i73    ! dim3 level 7 counter variable for arrays of ddts
- INTEGER                                    :: i83    ! dim3 level 8 counter variable for arrays of ddts
- INTEGER                                    :: i93    ! dim3 level 9 counter variable for arrays of ddts
- INTEGER                                    :: i04    ! dim4 level 0 counter variable for arrays of ddts
- INTEGER                                    :: i14    ! dim4 level 1 counter variable for arrays of ddts
- INTEGER                                    :: i24    ! dim4 level 2 counter variable for arrays of ddts
- INTEGER                                    :: i34    ! dim4 level 3 counter variable for arrays of ddts
- INTEGER                                    :: i44    ! dim4 level 4 counter variable for arrays of ddts
- INTEGER                                    :: i54    ! dim4 level 5 counter variable for arrays of ddts
- INTEGER                                    :: i64    ! dim4 level 6 counter variable for arrays of ddts
- INTEGER                                    :: i74    ! dim4 level 7 counter variable for arrays of ddts
- INTEGER                                    :: i84    ! dim4 level 8 counter variable for arrays of ddts
- INTEGER                                    :: i94    ! dim4 level 9 counter variable for arrays of ddts
- INTEGER                                    :: i05    ! dim5 level 0 counter variable for arrays of ddts
- INTEGER                                    :: i15    ! dim5 level 1 counter variable for arrays of ddts
- INTEGER                                    :: i25    ! dim5 level 2 counter variable for arrays of ddts
- INTEGER                                    :: i35    ! dim5 level 3 counter variable for arrays of ddts
- INTEGER                                    :: i45    ! dim5 level 4 counter variable for arrays of ddts
- INTEGER                                    :: i55    ! dim5 level 5 counter variable for arrays of ddts
- INTEGER                                    :: i65    ! dim5 level 6 counter variable for arrays of ddts
- INTEGER                                    :: i75    ! dim5 level 7 counter variable for arrays of ddts
- INTEGER                                    :: i85    ! dim5 level 8 counter variable for arrays of ddts
- INTEGER                                    :: i95    ! dim5 level 9 counter variable for arrays of ddts
+ INTEGER(IntKi)                             :: ErrStat2 ! local errors
+ CHARACTER(1024)                            :: ErrMsg2  ! local errors
     ! Initialize ErrStat
  ErrStat = ErrID_None
  ErrMsg  = ""
@@ -1711,7 +1635,9 @@ ENDIF
  endif
  order = SIZE(u) - 1
  IF ( order .eq. 0 ) THEN
-  CALL MeshCopy(u(1)%iceMesh, u_out%iceMesh, MESH_UPDATECOPY, ErrStat, ErrMsg )
+  CALL MeshCopy(u(1)%iceMesh, u_out%iceMesh, MESH_UPDATECOPY, ErrStat2, ErrMsg2 )
+         CALL SetErrStat(ErrStat2, ErrMsg2, ErrStat, ErrMsg,'IceFloe_Output_ExtrapInterp:%iceMesh')
+         IF (ErrStat>=AbortErrLev) RETURN
 IF (ALLOCATED(u_out%WriteOutput) .AND. ALLOCATED(u(1)%WriteOutput)) THEN
   u_out%WriteOutput = u(1)%WriteOutput
 END IF ! check if allocated
@@ -1721,7 +1647,9 @@ END IF ! check if allocated
     ErrMsg  = ' Error in IceFloe_Output_ExtrapInterp: t(1) must not equal t(2) to avoid a division-by-zero error.'
     RETURN
   END IF
-  CALL MeshExtrapInterp1(u(1)%iceMesh, u(2)%iceMesh, tin, u_out%iceMesh, tin_out, ErrStat, ErrMsg )
+  CALL MeshExtrapInterp1(u(1)%iceMesh, u(2)%iceMesh, tin, u_out%iceMesh, tin_out, ErrStat2, ErrMsg2 )
+         CALL SetErrStat(ErrStat2, ErrMsg2, ErrStat, ErrMsg,'IceFloe_Output_ExtrapInterp:%iceMesh')
+         IF (ErrStat>=AbortErrLev) RETURN
 IF (ALLOCATED(u_out%WriteOutput) .AND. ALLOCATED(u(1)%WriteOutput)) THEN
   ALLOCATE(b1(SIZE(u_out%WriteOutput,1)))
   ALLOCATE(c1(SIZE(u_out%WriteOutput,1)))
@@ -1746,7 +1674,9 @@ END IF ! check if allocated
     ErrMsg  = ' Error in IceFloe_Output_ExtrapInterp: t(1) must not equal t(3) to avoid a division-by-zero error.'
     RETURN
   END IF
-  CALL MeshExtrapInterp2(u(1)%iceMesh, u(2)%iceMesh, u(3)%iceMesh, tin, u_out%iceMesh, tin_out, ErrStat, ErrMsg )
+  CALL MeshExtrapInterp2(u(1)%iceMesh, u(2)%iceMesh, u(3)%iceMesh, tin, u_out%iceMesh, tin_out, ErrStat2, ErrMsg2 )
+         CALL SetErrStat(ErrStat2, ErrMsg2, ErrStat, ErrMsg,'IceFloe_Output_ExtrapInterp:%iceMesh')
+         IF (ErrStat>=AbortErrLev) RETURN
 IF (ALLOCATED(u_out%WriteOutput) .AND. ALLOCATED(u(1)%WriteOutput)) THEN
   ALLOCATE(b1(SIZE(u_out%WriteOutput,1)))
   ALLOCATE(c1(SIZE(u_out%WriteOutput,1)))
