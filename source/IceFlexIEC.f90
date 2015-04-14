@@ -50,7 +50,7 @@ contains
 !  local variables
       real(ReKi)     :: maxLoad  ! maximum load
       real(ReKi)     :: freq     ! frequency of sinusoidal load
-      integer(IntKi) :: err, nL
+      integer(IntKi) :: nL !err, 
 
 !  initialize the common parmeters for flexural ice failure
       call initIceFlex(iceInput, inParams, myIceParams, iceLog)

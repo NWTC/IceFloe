@@ -562,8 +562,8 @@ SUBROUTINE IceFloe_UpdateStates( t, n, u, utimes, p, x, xd, z, OtherState, ErrSt
 
       ! local variables
 
-      TYPE(IceFloe_InputType)            :: u_interp  ! input interpolated from given u at utimes
-      TYPE(IceFloe_ContinuousStateType)  :: xdot      ! continuous state time derivative
+!      TYPE(IceFloe_InputType)            :: u_interp  ! input interpolated from given u at utimes
+!      TYPE(IceFloe_ContinuousStateType)  :: xdot      ! continuous state time derivative
 
       type(iceFloe_LoggingType)   :: iceLog   ! structure with message and error logging variables
 

@@ -45,7 +45,7 @@ contains
       type(inputParams)                         :: inParams ! specific input parameter variable list
 
       real(ReKi)     :: fallTime, maxLoad
-      integer(IntKi) :: err, nL
+      integer(IntKi) :: nL ! err, 
 
 !  initialize the common parmeters
       call initIceCrushISO(iceInput, inParams, myIceParams, iceLog)

@@ -49,7 +49,7 @@ contains
 
 !  local variables
       real(ReKi)     :: maxLoad     ! Maximum static ice load, Newtons
-      integer(IntKi) :: err, nL
+      integer(IntKi) :: nL !err, 
 
 !  initialize the common parmeters
       call initIceFloe(iceInput, inParams, myIceParams, iceLog)

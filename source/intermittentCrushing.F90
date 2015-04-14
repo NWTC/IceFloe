@@ -46,7 +46,7 @@ contains
 
       type(inputParams)    :: inParams    ! specific input parameter variable list
       real(ReKi)           :: maxLoad  ! Global maximum crushing load
-      integer(IntKi)       :: err, nL
+      integer(IntKi)       :: nL !err, 
       
 !  initialize the common parmeters for flexural ice failure
       call initIceCrushISO(iceInput, inParams, myIceParams, iceLog)

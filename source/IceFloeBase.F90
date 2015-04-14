@@ -220,7 +220,7 @@ contains
       type(iceFloe_ParameterType), intent(inout)     :: myIceParams
       type(inputParams), intent(in)             :: inParams ! specific input parameter variable list
       type(iceFloe_LoggingType), intent(inout)   :: iceLog   ! structure with message and error logging variables
-      integer(IntKi) :: err
+!      integer(IntKi) :: err
       integer(IntKi) :: ns, nL, nSteps
       real(ReKi)     :: timeStep
    
@@ -334,7 +334,7 @@ contains
 
  ! Internal variable
    REAL(ReKi)                       :: RN(2)          ! Pairs of random numbers
-   integer(IntKi)                   :: n
+!   integer(IntKi)                   :: n
 
  ! Generate a normal distribution on (0,1) from a uniform distribution ( ACTUALLY [0,1) )
       CALL RanLux(RN)

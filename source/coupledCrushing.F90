@@ -53,7 +53,7 @@ contains
       type(inputParams)                            :: inParams    ! specific input parameter variable list
 
       real(ReKi)     :: defaultWidth
-      integer(IntKi) :: err
+!      integer(IntKi) :: err
 
 !  initialize the common parmeters
       call initIceFloe(iceInput, inParams, myIceParams, iceLog)

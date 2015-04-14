@@ -91,7 +91,7 @@ contains
       real(ReKi), intent(in)                    :: riseTime    ! fraction of period for which load is rising
       real(ReKi), intent(in)                    :: fallTime    ! fraction of period for which load is falling
 
-      integer(IntKi) :: err   ! error status from memory allocation
+!      integer(IntKi) :: err   ! error status from memory allocation
       integer(IntKi) :: n, ns, nL, nSteps, nRiseSteps, nFallSteps, minLoadSteps   ! various counters
       integer(IntKi) :: nStart      ! where to start in the phase of rising/falling/min load period
       
