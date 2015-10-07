@@ -59,7 +59,7 @@ MODULE IceFloe
 
    PRIVATE
 
-   TYPE(ProgDesc), PARAMETER  :: IceFloe_Ver = ProgDesc( 'IceFloe', 'v1.00.00', '30-Jun-2014' )
+   TYPE(ProgDesc), PARAMETER  :: IceFloe_Ver = ProgDesc( 'IceFloe', 'v1.00.01', '30-Sep-2015' )
 
 ! ..... Public Subroutines ...................................................................................................
 
@@ -206,7 +206,7 @@ SUBROUTINE IceFloe_Init( InitInp, u, p, x, xd, z, OtherState, y, Interval, InitO
                   //newLine//trim(iceLog%ErrMsg)
          p%rampTime = 10.0         
       endif
-      p%rampTime = max(p%rampTime, 0.1)
+      p%rampTime = max(p%rampTime, 0.1_ReKi)
       
    ! get the number of legs on the support structure
       call getIceInput(iceInput, 'numLegs', p%numLegs, iceLog, 1, 4)
