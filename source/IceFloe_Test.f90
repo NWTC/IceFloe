@@ -16,6 +16,7 @@
 ! See the License for the specific language governing permissions and
 ! limitations under the License.
 !************************************************************************
+! modified 8-Jan-2016 by B. Jonkman, NREL to conform to changes in FAST Modularization framework (added MiscVars)
 
 !**********************************************************************************************************************************
 ! File last committed: $Date$
@@ -47,7 +48,8 @@ program main
    TYPE(IceFloe_ContinuousStateType)  :: x           ! Initial continuous states
    TYPE(IceFloe_DiscreteStateType)    :: xd          ! Initial discrete states
    TYPE(IceFloe_ConstraintStateType)  :: z           ! Initial guess of the constraint states
-   TYPE(IceFloe_OtherStateType)       :: OtherState  ! Initial other/optimization states
+   TYPE(IceFloe_OtherStateType)       :: OtherState  ! Initial other states
+   TYPE(IceFloe_MiscVarType)          :: m           ! misc/optimization variables
 
    character(132) :: outFile
    integer(IntKi) :: n, i, numArg, nSteps, nL
@@ -68,7 +70,7 @@ program main
 
 
    InitInp%rootname = InitInp%InputFile
-   call IceFloe_Init( InitInp, u(1), p, x, xd, z, OtherState, y, Interval, InitOut, ErrStat, ErrMsg )
+   call IceFloe_Init( InitInp, u(1), p, x, xd, z, OtherState, y, m, Interval, InitOut, ErrStat, ErrMsg )
    if (ErrStat >= AbortErrLev) then
       call progAbort( ErrMsg )
       stop
@@ -89,7 +91,7 @@ program main
    nL = p%numLegs
    if (p%singleLoad) nL = 1
    do i = 0, nSteps-1
-      call IceFloe_CalcOutput( dble(i)*p%dt, u(1), p, x, xd, z, OtherState, y, ErrStat, ErrMsg )
+      call IceFloe_CalcOutput( dble(i)*p%dt, u(1), p, x, xd, z, OtherState, y, m, ErrStat, ErrMsg )
       if (ErrStat >= AbortErrLev) then
          write(*,*) ErrMsg
          stop
@@ -102,7 +104,7 @@ program main
 
    write(*,*) ' Wrap up'
 
-   call IceFloe_End( u(1), p, x, xd, z, OtherState, y, ErrStat, ErrMsg )
+   call IceFloe_End( u(1), p, x, xd, z, OtherState, y, m, ErrStat, ErrMsg )
 
 end program main
 
