@@ -126,9 +126,14 @@ SUBROUTINE IceFloe_Init( InitInp, u, p, x, xd, z, OtherState, y, m, Interval, In
       InitOut%Ver = IceFloe_Ver
       p%initFlag = .false.
       
-    ! Define initial system states here:
-
+   ! dummy variables for the FAST framework:
+   ! (initialized to prevent compiler warnings about INTENT(OUT) variables)
       x%DummyContStateVar = 0.
+      m%DummyMiscVar = 0
+      OtherState%DummyOtherState = 0
+      z%DummyConstrStateVar = 0.0_SiKi
+      xd%DummyDiscStateVar = 0.0_SiKi      
+      
 
       ! Display the module information
       CALL DispNVD( IceFloe_Ver )
